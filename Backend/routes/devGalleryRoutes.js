@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const devGalleryController = require("../controllers/DevGalleryController");
+const devGalleryController = require("../controllers/devGalleryController");
 
 // Route for uploading images
 router.post(
