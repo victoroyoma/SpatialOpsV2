@@ -40,7 +40,9 @@ const Messaging = () => {
 
   const fetchThreads = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/threads");
+      const response = await fetch(
+        "https://spatialops.onrender.com/api/threads"
+      );
       const data = await response.json();
       if (Array.isArray(data)) {
         // Ensure data is an array
@@ -57,7 +59,7 @@ const Messaging = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/users");
+      const response = await fetch("https://spatialops.onrender.com/api/users");
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -70,7 +72,7 @@ const Messaging = () => {
     setCurrentUser(null);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/threads/${thread.id}/messages`
+        `https://spatialops.onrender.com/api/threads/${thread.id}/messages`
       );
       const data = await response.json();
       if (Array.isArray(data)) {
@@ -90,7 +92,7 @@ const Messaging = () => {
     setCurrentThread(null);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/direct-messages/${loggedInUser.id}/${user.id}`
+        `https://spatialops.onrender.com/api/direct-messages/${loggedInUser.id}/${user.id}`
       );
       const data = await response.json();
       if (Array.isArray(data)) {
@@ -125,7 +127,7 @@ const Messaging = () => {
         };
 
     try {
-      await fetch("http://localhost:5000/api/messages", {
+      await fetch("https://spatialops.onrender.com/api/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -146,13 +148,16 @@ const Messaging = () => {
 
   const handleCreateThread = async () => {
     const threadData = { name: newThreadName };
-    const response = await fetch("http://localhost:5000/api/threads", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(threadData),
-    });
+    const response = await fetch(
+      "https://spatialops.onrender.com/api/threads",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(threadData),
+      }
+    );
     const newThread = await response.json();
     setThreads([...threads, newThread]);
     setNewThreadName("");
@@ -161,7 +166,7 @@ const Messaging = () => {
 
   const handleEditMessage = async (messageId, newText) => {
     try {
-      await fetch(`http://localhost:5000/api/messages/${messageId}`, {
+      await fetch(`https://spatialops.onrender.com/api/messages/${messageId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -181,7 +186,7 @@ const Messaging = () => {
 
   const handleDeleteMessage = async (messageId) => {
     try {
-      await fetch(`http://localhost:5000/api/messages/${messageId}`, {
+      await fetch(`https://spatialops.onrender.com/api/messages/${messageId}`, {
         method: "DELETE",
       });
       // Refresh the message list to remove the deleted message

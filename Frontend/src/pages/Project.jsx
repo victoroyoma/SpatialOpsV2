@@ -68,7 +68,7 @@ const Project = () => {
   const [taskData, setTaskData] = useState(initialTaskData);
 
   useEffect(() => {
-    fetch("http://localhost:5000/tasks")
+    fetch("https://spatialops.onrender.com/tasks")
       .then((response) => response.json())
       .then((data) => setTasks(data))
       .catch((error) => console.error("Error fetching tasks:", error));
@@ -84,7 +84,7 @@ const Project = () => {
   };
 
   const handleEditOpen = (task) => {
-    fetch(`http://localhost:5000/tasks/${task.ticketID}`)
+    fetch(`https://spatialops.onrender.com/tasks/${task.ticketID}`)
       .then((response) => response.json())
       .then((data) => {
         setTaskData(data);
@@ -95,7 +95,7 @@ const Project = () => {
   };
 
   const handleViewOpen = (task) => {
-    fetch(`http://localhost:5000/tasks/${task.ticketID}`)
+    fetch(`https://spatialops.onrender.com/tasks/${task.ticketID}`)
       .then((response) => response.json())
       .then((data) => {
         setTaskData(data);
@@ -106,7 +106,7 @@ const Project = () => {
   };
 
   const handleDelete = (ticketID) => {
-    fetch(`http://localhost:5000/tasks/${ticketID}`, {
+    fetch(`https://spatialops.onrender.com/tasks/${ticketID}`, {
       method: "DELETE",
     })
       .then(() => {
@@ -129,8 +129,8 @@ const Project = () => {
         : "POST";
       const url =
         method === "PUT"
-          ? `http://localhost:5000/tasks/${taskData.ticketID}`
-          : "http://localhost:5000/tasks";
+          ? `https://spatialops.onrender.com/tasks/${taskData.ticketID}`
+          : "https://spatialops.onrender.com/tasks";
 
       fetch(url, {
         method: method,

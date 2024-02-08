@@ -41,7 +41,7 @@ const DevGallery = () => {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/dev-gallery/upload",
+        "https://spatialops.onrender.com/api/dev-gallery/upload",
         formData,
         {
           headers: {
@@ -61,7 +61,7 @@ const DevGallery = () => {
   const handleRetrieveImages = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:5000/api/dev-gallery/images"
+        "https://spatialops.onrender.com/api/dev-gallery/images"
       );
       setImages(data);
     } catch (error) {
