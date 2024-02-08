@@ -17,9 +17,10 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://spatial-ops-v2.vercel.app/",
+    origin: "https://spatial-ops-v2.vercel.app",
   })
 );
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Setup routes
