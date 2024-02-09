@@ -35,7 +35,6 @@ const NavBar = () => {
     <AppBar position="static">
       <Toolbar style={{ justifyContent: "space-between", gap: "2px" }}>
         <Typography variant="h4">Spatial Ops</Typography>
-        {/* Navigation Section */}
         <Box>
           <IconButton color="inherit" component={Link} to="/" aria-label="home">
             <HomeIcon />

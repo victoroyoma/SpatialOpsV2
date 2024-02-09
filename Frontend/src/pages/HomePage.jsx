@@ -49,7 +49,7 @@ const HomePage = () => {
 
   const handleLoginClose = () => {
     setOpenLogin(false);
-    setActiveProfile(profiles[0]); // Revert to default or previous profile on cancel
+    setActiveProfile(profiles[0]);
   };
 
   const handleProfileFormChange = (e) => {

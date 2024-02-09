@@ -15,6 +15,9 @@ import {
   TextField,
   DialogActions,
   MenuItem,
+  CircularProgress,
+  Box,
+  Typography,
   IconButton,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -66,12 +69,20 @@ const Project = () => {
   const [open, setOpen] = useState(false);
   const [editable, setEditable] = useState(true);
   const [taskData, setTaskData] = useState(initialTaskData);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     fetch("https://spatialops.onrender.com/tasks")
       .then((response) => response.json())
-      .then((data) => setTasks(data))
-      .catch((error) => console.error("Error fetching tasks:", error));
+      .then((data) => {
+        setTasks(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching tasks:", error);
+        setIsLoading(false);
+      });
   }, []);
 
   const handleOpen = () => {
@@ -154,6 +165,23 @@ const Project = () => {
         .catch((error) => console.error("Error:", error));
     }
   };
+
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        flexDirection="column"
+      >
+        <CircularProgress />
+        <Typography variant="h6" style={{ marginTop: 20 }}>
+          Loading...
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Container component="main">
