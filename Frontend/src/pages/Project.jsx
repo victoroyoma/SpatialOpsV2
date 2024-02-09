@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import {
   Container,
   Paper,
@@ -78,7 +78,7 @@ const Project = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [currentTaskUrl, setCurrentTaskUrl] = useState("");
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoading(true);
@@ -132,11 +132,11 @@ const Project = () => {
   const handleViewOpen = (task) => {
     fetch(`https://spatialops.onrender.com/tasks/${task.ticketID}`)
       .then((response) => response.json())
-      .then((data) => {
-        setTaskData(data);
+      .then((task) => {
+        setTaskData(task);
         setOpen(true);
         setEditable(false);
-        navigate(`/tasks/${task.ticketID}`);
+        // navigate(`/tasks/${task.ticketID}`);
 
         const taskUrl = `${window.location.origin}/tasks/${task.ticketID}`;
         setCurrentTaskUrl(taskUrl);
@@ -402,10 +402,28 @@ const Project = () => {
           )}
         </DialogActions>
       </Dialog>
-      <Dialog open={viewDialogOpen} onClose={handleCloseViewDialog}>
-        <DialogTitle>Task URL</DialogTitle>
+      <Dialog
+        open={viewDialogOpen}
+        onClose={handleCloseViewDialog}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Task Details</DialogTitle>
         <DialogContent>
-          <Box display="flex" alignItems="center" gap={2}>
+          <Typography variant="h6">{taskData.title}</Typography>
+          <Typography variant="body1">Status: {taskData.status}</Typography>
+          <Typography variant="body1">
+            Component: {taskData.component}
+          </Typography>
+          <Typography variant="body1">Assignee: {taskData.assignee}</Typography>
+          <Typography variant="body1">
+            Milestone: {taskData.milestone}
+          </Typography>
+          <Typography variant="body1">
+            Description: {taskData.description}
+          </Typography>
+          <Typography variant="body1">Comments: {taskData.comments}</Typography>
+          <Box display="flex" alignItems="center" gap={2} mt={2}>
             <TextField
               fullWidth
               value={currentTaskUrl}
@@ -419,6 +437,11 @@ const Project = () => {
             </Tooltip>
           </Box>
         </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseViewDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
       </Dialog>
     </Container>
   );
