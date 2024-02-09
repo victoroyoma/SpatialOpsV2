@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Paper, Typography } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 
 const TaskDetails = () => {
   const { ticketID } = useParams();
@@ -18,10 +18,8 @@ const TaskDetails = () => {
   }
 
   return (
-    <Container component="main">
-      <Paper style={{ padding: "20px", marginTop: "20px" }}>
-        <Typography variant="h4">{task.title}</Typography>
-      </Paper>
+    <Container>
+      <Typography variant="h4">{task.title}</Typography>
     </Container>
   );
 };
