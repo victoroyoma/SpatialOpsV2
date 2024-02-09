@@ -35,7 +35,7 @@ const TaskDetails = () => {
             <Typography variant="body1">
               <strong>Description:</strong> {task.description}
             </Typography>
-            {task.comments && (
+            {Array.isArray(task.comments) ? (
               <div>
                 <Typography variant="body1">
                   <strong>Comments:</strong>
@@ -46,6 +46,10 @@ const TaskDetails = () => {
                   </Typography>
                 ))}
               </div>
+            ) : (
+              <Typography variant="body1">
+                <strong>Comment:</strong> {task.comments}
+              </Typography>
             )}
           </>
         ) : (
