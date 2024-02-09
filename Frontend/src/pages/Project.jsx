@@ -26,6 +26,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import PersonIcon from "@mui/icons-material/Person";
 import CircleIcon from "@mui/icons-material/Circle";
+import SaveIcon from "@mui/icons-material/Save";
 
 const initialTaskData = {
   ticketID: "",
@@ -70,6 +71,8 @@ const Project = () => {
   const [editable, setEditable] = useState(true);
   const [taskData, setTaskData] = useState(initialTaskData);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -117,6 +120,7 @@ const Project = () => {
   };
 
   const handleDelete = (ticketID) => {
+    setIsDeleting(true);
     fetch(`https://spatialops.onrender.com/tasks/${ticketID}`, {
       method: "DELETE",
     })
@@ -125,6 +129,7 @@ const Project = () => {
         setTasks(updatedTasks);
       })
       .catch((error) => console.error("Error:", error));
+    setIsDeleting(false);
   };
 
   const handleClose = () => setOpen(false);
@@ -134,6 +139,7 @@ const Project = () => {
   };
 
   const handleSubmit = () => {
+    setIsSaving(true);
     if (editable) {
       const method = tasks.some((task) => task.ticketID === taskData.ticketID)
         ? "PUT"
@@ -163,6 +169,7 @@ const Project = () => {
           handleClose();
         })
         .catch((error) => console.error("Error:", error));
+      setIsSaving(false);
     }
   };
 
@@ -190,6 +197,7 @@ const Project = () => {
         color="primary"
         startIcon={<AddIcon />}
         onClick={handleOpen}
+        disabled={isSaving || isDeleting}
       >
         Add Task
       </Button>
@@ -347,13 +355,24 @@ const Project = () => {
         </DialogContent>
         <DialogActions>
           {editable ? (
-            <Button onClick={handleSubmit} color="primary">
-              Save Changes
+            <Button
+              onClick={handleSubmit}
+              color="primary"
+              startIcon={<SaveIcon />}
+              disabled={isSaving}
+            >
+              {isSaving ? "Saving..." : "Save Changes"}
             </Button>
           ) : (
             <Button onClick={handleClose} color="primary">
               Close
             </Button>
+          )}
+          {isDeleting && (
+            <Box display="flex" alignItems="center">
+              <CircularProgress size={24} style={{ marginRight: 8 }} />
+              <Typography variant="body2">Deleting...</Typography>
+            </Box>
           )}
         </DialogActions>
       </Dialog>
