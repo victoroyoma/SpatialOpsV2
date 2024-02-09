@@ -21,7 +21,7 @@ const TaskDetails = () => {
           <>
             <Typography variant="h6">
               {" "}
-              <strong>Title</strong>
+              <strong>Title:</strong>
               {task.title}
             </Typography>
             <Typography variant="body1">
