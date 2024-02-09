@@ -19,6 +19,7 @@ import {
   Box,
   Typography,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -27,6 +28,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import PersonIcon from "@mui/icons-material/Person";
 import CircleIcon from "@mui/icons-material/Circle";
 import SaveIcon from "@mui/icons-material/Save";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 const initialTaskData = {
   ticketID: "",
@@ -73,6 +75,8 @@ const Project = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [currentTaskUrl, setCurrentTaskUrl] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
@@ -97,6 +101,21 @@ const Project = () => {
     setOpen(true);
   };
 
+  const handleCloseViewDialog = () => {
+    setViewDialogOpen(false);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(currentTaskUrl).then(
+      () => {
+        alert("URL copied to clipboard!");
+      },
+      (err) => {
+        console.error("Could not copy text: ", err);
+      }
+    );
+  };
+
   const handleEditOpen = (task) => {
     fetch(`https://spatialops.onrender.com/tasks/${task.ticketID}`)
       .then((response) => response.json())
@@ -115,6 +134,10 @@ const Project = () => {
         setTaskData(data);
         setOpen(true);
         setEditable(false);
+
+        const taskUrl = `${window.location.origin}/tasks/${task.ticketID}`;
+        setCurrentTaskUrl(taskUrl);
+        setViewDialogOpen(true);
       })
       .catch((error) => console.error("Error fetching task to View:", error));
   };
@@ -375,6 +398,24 @@ const Project = () => {
             </Box>
           )}
         </DialogActions>
+      </Dialog>
+      <Dialog open={viewDialogOpen} onClose={handleCloseViewDialog}>
+        <DialogTitle>Task URL</DialogTitle>
+        <DialogContent>
+          <Box display="flex" alignItems="center" gap={2}>
+            <TextField
+              fullWidth
+              value={currentTaskUrl}
+              variant="outlined"
+              InputProps={{ readOnly: true }}
+            />
+            <Tooltip title="Copy URL">
+              <IconButton onClick={copyToClipboard}>
+                <ContentCopyIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </DialogContent>
       </Dialog>
     </Container>
   );
