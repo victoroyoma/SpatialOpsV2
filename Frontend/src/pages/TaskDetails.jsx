@@ -19,7 +19,11 @@ const TaskDetails = () => {
       <DialogContent>
         {task ? (
           <>
-            <Typography variant="h6">{task.title}</Typography>
+            <Typography variant="h6">
+              {" "}
+              <strong>Title</strong>
+              {task.title}
+            </Typography>
             <Typography variant="body1">
               <strong>Status:</strong> {task.status}
             </Typography>
