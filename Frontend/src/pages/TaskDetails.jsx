@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Typography } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Typography } from "@mui/material";
 
 const TaskDetails = () => {
   const { ticketID } = useParams();
@@ -13,14 +13,46 @@ const TaskDetails = () => {
       .catch((error) => console.error("Error fetching task:", error));
   }, [ticketID]);
 
-  if (!task) {
-    return <div>Loading task details...</div>;
-  }
-
   return (
-    <Container>
-      <Typography variant="h4">{task.title}</Typography>
-    </Container>
+    <Dialog open={true} onClose={() => window.history.back()}>
+      <DialogTitle>Task Details</DialogTitle>
+      <DialogContent>
+        {task ? (
+          <>
+            <Typography variant="h6">{task.title}</Typography>
+            <Typography variant="body1">
+              <strong>Status:</strong> {task.status}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Component:</strong> {task.component}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Assignee:</strong> {task.assignee}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Milestone:</strong> {task.milestone}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Description:</strong> {task.description}
+            </Typography>
+            {task.comments && (
+              <div>
+                <Typography variant="body1">
+                  <strong>Comments:</strong>
+                </Typography>
+                {task.comments.map((comment, index) => (
+                  <Typography key={index} variant="body2">
+                    - {comment}
+                  </Typography>
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <Typography>Loading...</Typography>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 };
 
