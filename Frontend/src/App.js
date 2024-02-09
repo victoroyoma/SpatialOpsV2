@@ -4,6 +4,7 @@ import NavBar from "./components/NavBar";
 import HomePage from "./pages/HomePage";
 import Messaging from "./pages/Messaging";
 import Project from "./pages/Project";
+import TaskDetails from "./pages/TaskDetails";
 import Devices from "./pages/Devices";
 import DevGallery from "./pages/DevGallery";
 import Login from "./pages/Login";
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/messaging" element={<Messaging />} />
         <Route path="/project" element={<Project />} />
+        <Route path="/tasks/:ticketID" element={TaskDetails} />
         <Route path="/devices" element={<Devices />} />
         <Route path="/dev-gallery" element={<DevGallery />} />
         <Route path="/login" element={<Login />} />

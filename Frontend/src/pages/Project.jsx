@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Container,
   Paper,
@@ -77,6 +78,7 @@ const Project = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [currentTaskUrl, setCurrentTaskUrl] = useState("");
+  const history = useHistory();
 
   useEffect(() => {
     setIsLoading(true);
@@ -134,6 +136,7 @@ const Project = () => {
         setTaskData(data);
         setOpen(true);
         setEditable(false);
+        history.push(`/tasks/${task.ticketID}`);
 
         const taskUrl = `${window.location.origin}/tasks/${task.ticketID}`;
         setCurrentTaskUrl(taskUrl);
