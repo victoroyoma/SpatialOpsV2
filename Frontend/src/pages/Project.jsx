@@ -227,10 +227,6 @@ const Project = () => {
         startIcon={<AddIcon />}
         onClick={handleOpen}
         disabled={isSaving || isDeleting}
-        sx={{
-          minWidth: isMobile ? "100%" : "auto",
-          marginBottom: isMobile ? 2 : 0,
-        }}
       >
         Add Task
       </Button>
