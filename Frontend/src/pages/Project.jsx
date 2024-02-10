@@ -220,7 +220,7 @@ const Project = () => {
   }
 
   return (
-    <Container component="main" sx={{ mt: 6 }}>
+    <Container component="main" sx={{ mt: 10 }}>
       <Button
         variant="contained"
         color="primary"
