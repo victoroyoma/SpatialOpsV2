@@ -7,12 +7,11 @@ import {
   Box,
   Drawer,
   List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
+  ButtonBase,
   useTheme,
   useMediaQuery,
-  ButtonBase,
+  IconButton,
+  Button,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from "@mui/icons-material/Home";
@@ -23,8 +22,7 @@ import CollectionsIcon from "@mui/icons-material/Collections";
 import LoginIcon from "@mui/icons-material/Login";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import IconButton from "@mui/material/IconButton";
-import { getLoggedInUser } from "../utils/userUtils"; // Adjust the import path as needed
+import { getLoggedInUser } from "../utils/userUtils";
 
 const NavBar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -49,10 +47,10 @@ const NavBar = () => {
       to={to}
       sx={{ width: "100%", justifyContent: "flex-start" }}
     >
-      <ListItem>
-        <ListItemIcon>{icon}</ListItemIcon>
-        <ListItemText primary={text} />
-      </ListItem>
+      <Box sx={{ display: "flex", alignItems: "center", padding: "8px 16px" }}>
+        {icon}
+        <Typography sx={{ marginLeft: "10px" }}>{text}</Typography>
+      </Box>
     </ButtonBase>
   );
 
@@ -73,17 +71,18 @@ const NavBar = () => {
         />
 
         {loggedInUser ? (
-          <ButtonBase
-            onClick={logout}
-            sx={{ width: "100%", justifyContent: "flex-start" }}
-          >
-            <ListItem>
-              <ListItemIcon>
-                <ExitToAppIcon />
-              </ListItemIcon>
-              <ListItemText primary="Logout" />
-            </ListItem>
-          </ButtonBase>
+          <Box sx={{ padding: "8px 16px" }}>
+            <Typography color="inherit" sx={{ marginRight: 2 }}>
+              Welcome, {loggedInUser.firstName || loggedInUser.email}
+            </Typography>
+            <Button
+              color="inherit"
+              onClick={logout}
+              startIcon={<ExitToAppIcon />}
+            >
+              Logout
+            </Button>
+          </Box>
         ) : (
           <>
             <NavItem icon={<LoginIcon />} text="Login" to="/login" />
@@ -99,8 +98,8 @@ const NavBar = () => {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <AppBar component="nav">
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <AppBar component="nav" sx={{ marginBottom: 10 }}>
         <Toolbar>
           {isMobile && (
             <IconButton
@@ -117,8 +116,7 @@ const NavBar = () => {
             Spatial Ops
           </Typography>
           {!isMobile && (
-            <Box sx={{ display: "flex" }}>
-              {/* Non-mobile nav items */}
+            <Box sx={{ display: "flex", alignItems: "center" }}>
               <NavItem icon={<HomeIcon />} text="Home" to="/" />
               <NavItem
                 icon={<MessageIcon />}
@@ -136,15 +134,22 @@ const NavBar = () => {
                 text="Dev Gallery"
                 to="/dev-gallery"
               />
-
+              {/* Authentication Section */}
               {loggedInUser ? (
-                <ButtonBase
-                  onClick={logout}
-                  sx={{ color: "inherit", marginLeft: 2 }}
+                <Box
+                  sx={{ display: "flex", alignItems: "center", marginLeft: 2 }}
                 >
-                  <ExitToAppIcon />
-                  <Typography sx={{ marginLeft: 1 }}>Logout</Typography>
-                </ButtonBase>
+                  <Typography color="inherit" sx={{ marginRight: 2 }}>
+                    Welcome, {loggedInUser.firstName || loggedInUser.email}
+                  </Typography>
+                  <Button
+                    color="inherit"
+                    onClick={logout}
+                    startIcon={<ExitToAppIcon />}
+                  >
+                    Logout
+                  </Button>
+                </Box>
               ) : (
                 <Box sx={{ display: "flex" }}>
                   <NavItem icon={<LoginIcon />} text="Login" to="/login" />
@@ -169,6 +174,9 @@ const NavBar = () => {
         >
           {drawer}
         </Drawer>
+      </Box>
+      <Box component="main" sx={{ flexGrow: 1 }}>
+        {/* Page content goes here */}
       </Box>
     </Box>
   );

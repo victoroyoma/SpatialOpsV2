@@ -30,6 +30,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import CircleIcon from "@mui/icons-material/Circle";
 import SaveIcon from "@mui/icons-material/Save";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { useTheme, useMediaQuery } from "@mui/material";
 
 const initialTaskData = {
   ticketID: "",
@@ -78,6 +79,8 @@ const Project = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [currentTaskUrl, setCurrentTaskUrl] = useState("");
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   // const navigate = useNavigate();
 
   useEffect(() => {
@@ -224,11 +227,18 @@ const Project = () => {
         startIcon={<AddIcon />}
         onClick={handleOpen}
         disabled={isSaving || isDeleting}
+        sx={{
+          minWidth: isMobile ? "100%" : "auto",
+          marginBottom: isMobile ? 2 : 0,
+        }}
       >
         Add Task
       </Button>
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer
+        component={Paper}
+        sx={{ maxWidth: "100%", overflowX: "auto" }}
+      >
+        <Table size={isMobile ? "small" : "medium"}>
           <TableHead>
             <TableRow>
               <TableCell>TicketID</TableCell>
@@ -236,9 +246,9 @@ const Project = () => {
               <TableCell>Status</TableCell>
               <TableCell>Component</TableCell>
               <TableCell>Assignee</TableCell>
-              <TableCell>Milestone</TableCell>
+              {isMobile ? null : <TableCell>Milestone</TableCell>}
               <TableCell>Description</TableCell>
-              <TableCell>Comments</TableCell>
+              {isMobile ? null : <TableCell>Comments</TableCell>}
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -254,9 +264,9 @@ const Project = () => {
                   {task.component}
                 </TableCell>
                 <TableCell>{task.assignee}</TableCell>
-                <TableCell>{task.milestone}</TableCell>
-                <TableCell>{task.description}</TableCell>
-                <TableCell>{task.comments}</TableCell>
+                {isMobile ? null : <TableCell>{task.milestone}</TableCell>}
+                <TableCell>{task.description}</TableCell>{" "}
+                {isMobile ? null : <TableCell>{task.comments}</TableCell>}
                 <TableCell>
                   <IconButton onClick={() => handleEditOpen(task)}>
                     <EditIcon />
@@ -274,7 +284,12 @@ const Project = () => {
         </Table>
       </TableContainer>
 
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullWidth
+        maxWidth={isMobile ? "sm" : "md"}
+      >
         <DialogTitle>{editable ? "Add Task" : "View Task"}</DialogTitle>
         <DialogContent>
           <TextField
@@ -310,7 +325,6 @@ const Project = () => {
               </MenuItem>
             ))}
           </TextField>
-
           <TextField
             select
             name="component"
@@ -323,12 +337,11 @@ const Project = () => {
           >
             {componentOptions.map((option, index) => (
               <MenuItem key={index} value={option}>
-                <CircleIcon fontSize="small" style={{ marginRight: 8 }} />{" "}
+                <CircleIcon fontSize="small" style={{ marginRight: 8 }} />
                 {option}
               </MenuItem>
             ))}
           </TextField>
-
           <TextField
             select
             name="assignee"
@@ -341,12 +354,11 @@ const Project = () => {
           >
             {assigneeOptions.map((option, index) => (
               <MenuItem key={index} value={option}>
-                <PersonIcon fontSize="small" style={{ marginRight: 8 }} />{" "}
+                <PersonIcon fontSize="small" style={{ marginRight: 8 }} />
                 {option}
               </MenuItem>
             ))}
           </TextField>
-
           <TextField
             name="milestone"
             label="Milestone"
@@ -367,17 +379,18 @@ const Project = () => {
             onChange={handleInputChange}
             disabled={!editable}
           />
-          <TextField
-            name="comments"
-            label="Comments"
-            fullWidth
-            margin="dense"
-            value={taskData.comments}
-            multiline
-            rows={2}
-            onChange={handleInputChange}
-            disabled={!editable}
-          />
+          {editable && (
+            <TextField
+              name="comments"
+              label="Comments"
+              fullWidth
+              margin="dense"
+              value={taskData.comments}
+              multiline
+              rows={2}
+              onChange={handleInputChange}
+            />
+          )}
         </DialogContent>
         <DialogActions>
           {editable ? (
@@ -394,14 +407,9 @@ const Project = () => {
               Close
             </Button>
           )}
-          {isDeleting && (
-            <Box display="flex" alignItems="center">
-              <CircularProgress size={24} style={{ marginRight: 8 }} />
-              <Typography variant="body2">Deleting...</Typography>
-            </Box>
-          )}
         </DialogActions>
       </Dialog>
+
       <Dialog
         open={viewDialogOpen}
         onClose={handleCloseViewDialog}
