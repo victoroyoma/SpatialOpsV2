@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
-  Button,
-  IconButton,
   Typography,
   Box,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  useTheme,
+  useMediaQuery,
+  ButtonBase,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from "@mui/icons-material/Home";
 import MessageIcon from "@mui/icons-material/Message";
 import WorkIcon from "@mui/icons-material/Work";
@@ -15,105 +22,155 @@ import DevicesIcon from "@mui/icons-material/Devices";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import LoginIcon from "@mui/icons-material/Login";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp"; // Icon for the logout button
-import { getLoggedInUser } from "../utils/userUtils"; // Ensure the path is correct based on your project structure
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import IconButton from "@mui/material/IconButton";
+import { getLoggedInUser } from "../utils/userUtils"; // Adjust the import path as needed
 
 const NavBar = () => {
-  const loggedInUser = getLoggedInUser(); // Retrieve logged-in user data from localStorage
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const loggedInUser = getLoggedInUser();
   const navigate = useNavigate();
 
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   const logout = () => {
-    // Clear user data and authentication token from localStorage
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-
-    // Navigate to the login page after successful logout
     navigate("/login");
   };
 
-  return (
-    <AppBar position="static">
-      <Toolbar style={{ justifyContent: "space-between", gap: "2px" }}>
-        <Typography variant="h4">Spatial Ops</Typography>
-        <Box>
-          <IconButton color="inherit" component={Link} to="/" aria-label="home">
-            <HomeIcon />
-            <Typography variant="h6">Home</Typography>
-          </IconButton>
-          <IconButton
-            color="inherit"
-            component={Link}
-            to="/messaging"
-            aria-label="messaging"
-          >
-            <MessageIcon />
-            <Typography variant="h6">Messaging</Typography>
-          </IconButton>
-          <IconButton
-            color="inherit"
-            component={Link}
-            to="/project"
-            aria-label="project"
-          >
-            <WorkIcon />
-            <Typography variant="h6">Task Manager</Typography>
-          </IconButton>
-          <IconButton
-            color="inherit"
-            component={Link}
-            to="/devices"
-            aria-label="devices"
-          >
-            <DevicesIcon />
-            <Typography variant="h6">Device Logs</Typography>
-          </IconButton>
-          <IconButton
-            color="inherit"
-            component={Link}
-            to="/dev-gallery"
-            aria-label="dev-gallery"
-          >
-            <CollectionsIcon />
-            <Typography variant="h6">Dev Gallery</Typography>
-          </IconButton>
-        </Box>
+  const NavItem = ({ icon, text, to }) => (
+    <ButtonBase
+      component={Link}
+      to={to}
+      sx={{ width: "100%", justifyContent: "flex-start" }}
+    >
+      <ListItem>
+        <ListItemIcon>{icon}</ListItemIcon>
+        <ListItemText primary={text} />
+      </ListItem>
+    </ButtonBase>
+  );
 
-        {/* Authentication Section */}
+  const drawer = (
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center", width: 250 }}>
+      <Typography variant="h6" sx={{ my: 2 }}>
+        Spatial Ops
+      </Typography>
+      <List>
+        <NavItem icon={<HomeIcon />} text="Home" to="/" />
+        <NavItem icon={<MessageIcon />} text="Messaging" to="/messaging" />
+        <NavItem icon={<WorkIcon />} text="Task Manager" to="/project" />
+        <NavItem icon={<DevicesIcon />} text="Device Logs" to="/devices" />
+        <NavItem
+          icon={<CollectionsIcon />}
+          text="Dev Gallery"
+          to="/dev-gallery"
+        />
+
         {loggedInUser ? (
-          <Box>
-            <Typography color="inherit" style={{ marginRight: 16 }}>
-              Welcome, {loggedInUser.firstName || loggedInUser.email}
-            </Typography>
-            <Button
-              color="inherit"
-              onClick={logout}
-              startIcon={<ExitToAppIcon />}
-            >
-              Logout
-            </Button>
-          </Box>
+          <ButtonBase
+            onClick={logout}
+            sx={{ width: "100%", justifyContent: "flex-start" }}
+          >
+            <ListItem>
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </ButtonBase>
         ) : (
-          <Box>
-            <Button
-              color="inherit"
-              component={Link}
-              to="/login"
-              startIcon={<LoginIcon />}
-            >
-              Login
-            </Button>
-            <Button
-              color="inherit"
-              component={Link}
+          <>
+            <NavItem icon={<LoginIcon />} text="Login" to="/login" />
+            <NavItem
+              icon={<AppRegistrationIcon />}
+              text="Register"
               to="/register"
-              startIcon={<AppRegistrationIcon />}
-            >
-              Register
-            </Button>
-          </Box>
+            />
+          </>
         )}
-      </Toolbar>
-    </AppBar>
+      </List>
+    </Box>
+  );
+
+  return (
+    <Box sx={{ display: "flex" }}>
+      <AppBar component="nav">
+        <Toolbar>
+          {isMobile && (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: "none" } }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Spatial Ops
+          </Typography>
+          {!isMobile && (
+            <Box sx={{ display: "flex" }}>
+              {/* Non-mobile nav items */}
+              <NavItem icon={<HomeIcon />} text="Home" to="/" />
+              <NavItem
+                icon={<MessageIcon />}
+                text="Messaging"
+                to="/messaging"
+              />
+              <NavItem icon={<WorkIcon />} text="Task Manager" to="/project" />
+              <NavItem
+                icon={<DevicesIcon />}
+                text="Device Logs"
+                to="/devices"
+              />
+              <NavItem
+                icon={<CollectionsIcon />}
+                text="Dev Gallery"
+                to="/dev-gallery"
+              />
+
+              {loggedInUser ? (
+                <ButtonBase
+                  onClick={logout}
+                  sx={{ color: "inherit", marginLeft: 2 }}
+                >
+                  <ExitToAppIcon />
+                  <Typography sx={{ marginLeft: 1 }}>Logout</Typography>
+                </ButtonBase>
+              ) : (
+                <Box sx={{ display: "flex" }}>
+                  <NavItem icon={<LoginIcon />} text="Login" to="/login" />
+                  <NavItem
+                    icon={<AppRegistrationIcon />}
+                    text="Register"
+                    to="/register"
+                  />
+                </Box>
+              )}
+            </Box>
+          )}
+        </Toolbar>
+      </AppBar>
+      <Box component="nav">
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{ keepMounted: true }}
+          sx={{ display: { xs: "block", sm: "none" } }}
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+    </Box>
   );
 };
 
