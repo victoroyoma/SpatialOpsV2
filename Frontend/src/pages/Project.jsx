@@ -220,7 +220,7 @@ const Project = () => {
   }
 
   return (
-    <Container component="main">
+    <Container component="main" sx={{ mt: 1 }}>
       <Button
         variant="contained"
         color="primary"
@@ -246,9 +246,9 @@ const Project = () => {
               <TableCell>Status</TableCell>
               <TableCell>Component</TableCell>
               <TableCell>Assignee</TableCell>
-              {isMobile ? null : <TableCell>Milestone</TableCell>}
+              <TableCell>Milestone</TableCell>
               <TableCell>Description</TableCell>
-              {isMobile ? null : <TableCell>Comments</TableCell>}
+              <TableCell>Comments</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -264,9 +264,9 @@ const Project = () => {
                   {task.component}
                 </TableCell>
                 <TableCell>{task.assignee}</TableCell>
-                {isMobile ? null : <TableCell>{task.milestone}</TableCell>}
+                <TableCell>{task.milestone}</TableCell>
                 <TableCell>{task.description}</TableCell>{" "}
-                {isMobile ? null : <TableCell>{task.comments}</TableCell>}
+                <TableCell>{task.comments}</TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleEditOpen(task)}>
                     <EditIcon />
