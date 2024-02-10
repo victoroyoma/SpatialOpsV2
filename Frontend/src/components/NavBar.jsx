@@ -98,7 +98,7 @@ const NavBar = () => {
   );
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <AppBar component="nav">
         <Toolbar>
           {isMobile && (
