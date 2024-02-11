@@ -210,7 +210,7 @@ const Messaging = () => {
   };
 
   return (
-    <Container component="main">
+    <Container component="main" sx={{ mt: 10 }}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
           <Paper elevation={3} style={{ padding: "10px" }}>

@@ -68,7 +68,7 @@ const HomePage = () => {
   };
 
   return (
-    <Container component="main">
+    <Container component="main" sx={{ mt: 10 }}>
       <Paper style={facebookStyle.paper}>
         <Typography variant="h5" style={facebookStyle.header}>
           Welcome to the Homepage

@@ -41,7 +41,7 @@ const Register = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="xs" sx={{ mt: 10 }}>
       <Paper
         style={{
           marginTop: 8,

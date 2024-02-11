@@ -70,7 +70,7 @@ const DevGallery = () => {
   };
 
   return (
-    <Container component="main" maxWidth="md">
+    <Container component="main" maxWidth="md" sx={{ mt: 10 }}>
       <Paper elevation={3} sx={{ p: 3, mt: 2 }}>
         <Typography variant="h5" gutterBottom>
           Dev Gallery
