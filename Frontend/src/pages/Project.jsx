@@ -39,10 +39,18 @@ const initialTaskData = {
   component: "",
   assignee: "",
   milestone: "",
+  priority: "",
   description: "",
   comments: "",
 };
 const statusOptions = ["In Progress", "Completed", "Not Started"];
+const priorityOptions = [
+  { value: "Pri0", label: "Pri0 - Right Now", color: "#ff1744" },
+  { value: "Pri1", label: "Pri1 - Soon", color: "#ff9100" },
+  { value: "Pri2", label: "Pri2 - Later", color: "#ffc400" },
+  { value: "Pri3", label: "Pri3 - Eventually", color: "#00e676" },
+];
+
 const componentOptions = [
   "DevGallery",
   "Device Logs",
@@ -243,6 +251,7 @@ const Project = () => {
               <TableCell>Component</TableCell>
               <TableCell>Assignee</TableCell>
               <TableCell>Milestone</TableCell>
+              <TableCell>Priority</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Comments</TableCell>
               <TableCell>Actions</TableCell>
@@ -261,6 +270,19 @@ const Project = () => {
                 </TableCell>
                 <TableCell>{task.assignee}</TableCell>
                 <TableCell>{task.milestone}</TableCell>
+                <TableCell
+                  sx={{
+                    color: priorityOptions.find(
+                      (option) => option.value === task.priority
+                    )?.color,
+                  }}
+                >
+                  {
+                    priorityOptions.find(
+                      (option) => option.value === task.priority
+                    )?.label
+                  }
+                </TableCell>
                 <TableCell>{task.description}</TableCell>{" "}
                 <TableCell>{task.comments}</TableCell>
                 <TableCell>
@@ -365,6 +387,32 @@ const Project = () => {
             disabled={!editable}
           />
           <TextField
+            select
+            name="priority"
+            label="Priority"
+            fullWidth
+            margin="dense"
+            value={taskData.priority}
+            onChange={handleInputChange}
+            disabled={!editable}
+            SelectProps={{
+              renderValue: (selected) =>
+                priorityOptions.find((option) => option.value === selected)
+                  ?.label,
+            }}
+          >
+            {priorityOptions.map((option) => (
+              <MenuItem
+                key={option.value}
+                value={option.value}
+                sx={{ color: option.color }}
+              >
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <TextField
             name="description"
             label="Description"
             fullWidth
@@ -423,6 +471,7 @@ const Project = () => {
           <Typography variant="body1">
             Milestone: {taskData.milestone}
           </Typography>
+          <Typography variant="body1">Priority: {taskData.priority}</Typography>
           <Typography variant="body1">
             Description: {taskData.description}
           </Typography>
