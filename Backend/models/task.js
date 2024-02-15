@@ -12,7 +12,11 @@ module.exports = (sequelize, DataTypes) => {
       component: DataTypes.STRING,
       assignee: DataTypes.STRING,
       milestone: DataTypes.STRING,
-      priority: DataTypes.STRING,
+      priority: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "Pri0",
+      },
       description: DataTypes.TEXT,
       comments: DataTypes.TEXT,
     },
