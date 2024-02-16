@@ -295,17 +295,10 @@ const Project = () => {
   return (
     <Container component="main" sx={{ mt: 10 }}>
       <Box display="flex" justifyContent="space-between" mb={2}>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={handleDialogOpen}
-        >
-          Add Task
-        </Button>
         <Box>
           <IconButton onClick={handleSortMenuClick}>
             <SortIcon />
+            Sort by
           </IconButton>
           <Menu
             anchorEl={anchorElSort}
@@ -324,6 +317,7 @@ const Project = () => {
           </Menu>
           <IconButton onClick={handleFilterMenuClick}>
             <FilterListIcon />
+            Filter by
           </IconButton>
           <Menu
             anchorEl={anchorElFilter}
