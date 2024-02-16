@@ -23,11 +23,15 @@ import {
   Typography,
   IconButton,
   Tooltip,
+  Menu,
+  InputAdornment,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import SortIcon from "@mui/icons-material/Sort";
 import PersonIcon from "@mui/icons-material/Person";
 import CircleIcon from "@mui/icons-material/Circle";
 import SaveIcon from "@mui/icons-material/Save";
@@ -89,8 +93,11 @@ const Project = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [currentTaskUrl, setCurrentTaskUrl] = useState("");
+  const [anchorElSort, setAnchorElSort] = useState(null);
+  const [anchorElFilter, setAnchorElFilter] = useState(null);
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
+  const [sortOption, setSortOption] = useState("");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   // const navigate = useNavigate();
@@ -179,25 +186,58 @@ const Project = () => {
     setTaskData({ ...taskData, [e.target.name]: e.target.value });
   };
 
-  const handleFilterChange = (filterName, value) => {
-    setFilters({ ...filters, [filterName]: value });
-    fetchTasks();
-  };
-
   const handleSortChange = (sortName, value) => {
     setSort({ ...sort, [sortName]: value });
     fetchTasks();
   };
 
   const fetchTasks = async () => {
-    const query = new URLSearchParams({ ...filters, ...sort }).toString();
     setIsLoading(true);
-    const response = await fetch(
-      `https://spatialops.onrender.com/tasks?${query}`
-    );
-    const data = await response.json();
-    setTasks(data);
-    setIsLoading(false);
+    const query = new URLSearchParams({ ...filters, ...sort }).toString();
+    try {
+      const response = await fetch(
+        `https://spatialops.onrender.com/tasks?${query}`
+      );
+      const data = await response.json();
+      setTasks(data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDialogOpen = () => setOpen(true);
+  const handleDialogClose = () => setOpen(false);
+  const handleSortMenuClick = (event) => setAnchorElSort(event.currentTarget);
+  const handleFilterMenuClick = (event) =>
+    setAnchorElFilter(event.currentTarget);
+  const handleSortMenuClose = (sortField) => {
+    setSort({ field: sortField, order: sort.order === "asc" ? "desc" : "asc" });
+    setAnchorElSort(null);
+  };
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+    setFilters({ ...filters, [name]: value });
+  };
+
+  const handleSortClick = (event) => {
+    setAnchorElSort(event.currentTarget);
+  };
+
+  const handleFilterClick = (event) => {
+    setAnchorElFilter(event.currentTarget);
+  };
+
+  const handleSortClose = (option) => {
+    setSortOption(option);
+    setAnchorElSort(null);
+    fetchTasks(); // Refetch tasks with new sort option
+  };
+
+  const handleFilterClose = () => {
+    setAnchorElFilter(null);
+    fetchTasks(); // Refetch tasks with new filter options
   };
 
   const handleSubmit = () => {
@@ -254,8 +294,77 @@ const Project = () => {
 
   return (
     <Container component="main" sx={{ mt: 10 }}>
-      <TaskFilters onFilterChange={handleFilterChange} />
-      <TaskSort onSortChange={handleSortChange} />
+      <Box display="flex" justifyContent="space-between" mb={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={handleDialogOpen}
+        >
+          Add Task
+        </Button>
+        <Box>
+          <IconButton onClick={handleSortMenuClick}>
+            <SortIcon />
+          </IconButton>
+          <Menu
+            anchorEl={anchorElSort}
+            open={Boolean(anchorElSort)}
+            onClose={() => handleSortMenuClose(null)}
+          >
+            <MenuItem onClick={() => handleSortMenuClose("component")}>
+              Title
+            </MenuItem>
+            <MenuItem onClick={() => handleSortMenuClose("status")}>
+              Status
+            </MenuItem>
+            <MenuItem onClick={() => handleSortMenuClose("priority")}>
+              Priority
+            </MenuItem>
+          </Menu>
+          <IconButton onClick={handleFilterMenuClick}>
+            <FilterListIcon />
+          </IconButton>
+          <Menu
+            anchorEl={anchorElFilter}
+            open={Boolean(anchorElFilter)}
+            onClose={() => setAnchorElFilter(null)}
+          >
+            <MenuItem>
+              <TextField
+                label="Status"
+                name="status"
+                value={filters.status || ""}
+                onChange={handleFilterChange}
+                select
+                fullWidth
+              >
+                {statusOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </MenuItem>
+            <MenuItem>
+              <TextField
+                label="Priority"
+                name="priority"
+                value={filters.priority || ""}
+                onChange={handleFilterChange}
+                select
+                fullWidth
+              >
+                {priorityOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </MenuItem>
+          </Menu>
+        </Box>
+      </Box>
       <Button
         variant="contained"
         color="primary"
