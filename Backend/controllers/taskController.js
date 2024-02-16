@@ -1,6 +1,6 @@
 const { Task } = require("../models/index");
 
-exports.getTasks = async (req, res) => {
+const getTasks = async (req, res) => {
   try {
     const {
       status,
