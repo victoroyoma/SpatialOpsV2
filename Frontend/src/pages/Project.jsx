@@ -296,6 +296,15 @@ const Project = () => {
     <Container component="main" sx={{ mt: 10 }}>
       <Box display="flex" justifyContent="space-between" mb={2}>
         <Box>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleOpen}
+            disabled={isSaving || isDeleting}
+          >
+            Add Task
+          </Button>
           <IconButton onClick={handleSortMenuClick}>
             <SortIcon />
             Sort by
@@ -359,15 +368,7 @@ const Project = () => {
           </Menu>
         </Box>
       </Box>
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<AddIcon />}
-        onClick={handleOpen}
-        disabled={isSaving || isDeleting}
-      >
-        Add Task
-      </Button>
+
       <TableContainer
         component={Paper}
         sx={{ maxWidth: "100%", overflowX: "auto" }}
