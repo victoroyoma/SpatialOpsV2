@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import TaskFilters from "../contexts/TaskFilters";
+import TaskSort from "../contexts/TaskSort";
 // import { useNavigate } from "react-router-dom";
 import {
   Container,
@@ -87,6 +89,8 @@ const Project = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [currentTaskUrl, setCurrentTaskUrl] = useState("");
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState({});
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   // const navigate = useNavigate();
@@ -103,7 +107,7 @@ const Project = () => {
         console.error("Error fetching tasks:", error);
         setIsLoading(false);
       });
-  }, []);
+  }, [filters, sort]);
 
   const handleOpen = () => {
     setEditable(true);
@@ -175,6 +179,27 @@ const Project = () => {
     setTaskData({ ...taskData, [e.target.name]: e.target.value });
   };
 
+  const handleFilterChange = (filterName, value) => {
+    setFilters({ ...filters, [filterName]: value });
+    fetchTasks();
+  };
+
+  const handleSortChange = (sortName, value) => {
+    setSort({ ...sort, [sortName]: value });
+    fetchTasks();
+  };
+
+  const fetchTasks = async () => {
+    const query = new URLSearchParams({ ...filters, ...sort }).toString();
+    setIsLoading(true);
+    const response = await fetch(
+      `https://spatialops.onrender.com/tasks?${query}`
+    );
+    const data = await response.json();
+    setTasks(data);
+    setIsLoading(false);
+  };
+
   const handleSubmit = () => {
     setIsSaving(true);
     if (editable) {
@@ -229,6 +254,8 @@ const Project = () => {
 
   return (
     <Container component="main" sx={{ mt: 10 }}>
+      <TaskFilters onFilterChange={handleFilterChange} />
+      <TaskSort onSortChange={handleSortChange} />
       <Button
         variant="contained"
         color="primary"

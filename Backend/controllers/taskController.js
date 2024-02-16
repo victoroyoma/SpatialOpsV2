@@ -1,11 +1,30 @@
 const { Task } = require("../models/index");
 
-const getTasks = async (req, res) => {
+exports.getTasks = async (req, res) => {
   try {
-    const tasks = await Task.findAll();
+    const {
+      status,
+      priority,
+      assignee,
+      component,
+      milestone,
+      sortBy,
+      sortOrder,
+    } = req.query;
+    const tasks = await Task.findAll({
+      where: {
+        ...(status && { status }),
+        ...(priority && { priority }),
+        ...(assignee && { assignee }),
+        ...(component && { component }),
+        ...(milestone && { milestone }),
+      },
+      order: sortBy ? [[sortBy, sortOrder || "ASC"]] : undefined,
+    });
     res.json(tasks);
-  } catch (err) {
-    res.status(500).send(err.message);
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
