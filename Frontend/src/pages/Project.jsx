@@ -186,6 +186,39 @@ const Project = () => {
   const handleFilterChange = (event) => {
     const { name, value } = event.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
+
+    // Trigger sorting based on the selected filter
+    if (name === "status") {
+      // status
+      const statusOrder = ["Completed", "In Progress", "Not Started"];
+      setTasks((prevTasks) =>
+        [...prevTasks].sort(
+          (a, b) =>
+            statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
+        )
+      );
+    } else if (name === "priority") {
+      // priority
+      const priorityOrder = ["Pri0", "Pri1", "Pri2", "Pri3"];
+      setTasks((prevTasks) =>
+        [...prevTasks].sort(
+          (a, b) =>
+            priorityOrder.indexOf(a.priority) -
+            priorityOrder.indexOf(b.priority)
+        )
+      );
+    } else if (name === "assignee") {
+      const assigneeCount = tasks.reduce((acc, task) => {
+        acc[task.assignee] = (acc[task.assignee] || 0) + 1;
+        return acc;
+      }, {});
+      // Sort tasks by the count of their assignees
+      setTasks((prevTasks) =>
+        [...prevTasks].sort(
+          (a, b) => assigneeCount[b.assignee] - assigneeCount[a.assignee]
+        )
+      );
+    }
   };
 
   const handleSortMenuClick = (event) => {
