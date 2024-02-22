@@ -347,7 +347,7 @@ const Project = () => {
           open={Boolean(anchorElSort)}
           onClose={() => setAnchorElSort(null)}
         >
-          {["Title", "Status", "Priority"].map((sortOption) => (
+          {["Assingee", "Status", "Priority"].map((sortOption) => (
             <MenuItem
               key={sortOption}
               onClick={() => handleSortMenuClose(sortOption.toLowerCase())}
