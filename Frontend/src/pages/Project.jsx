@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import TaskFilters from "../contexts/TaskFilters";
-import TaskSort from "../contexts/TaskSort";
+// import TaskFilters from "../contexts/TaskFilters";
+// import TaskSort from "../contexts/TaskSort";
 // import { useNavigate } from "react-router-dom";
 import {
   Container,
@@ -24,7 +24,6 @@ import {
   IconButton,
   Tooltip,
   Menu,
-  InputAdornment,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -83,6 +82,56 @@ const statusColors = {
   Completed: "green",
 };
 
+const FilterPanel = ({ filters, onFilterChange }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  <Box
+    sx={{
+      display: "flex",
+      flexDirection: isMobile ? "column" : "row",
+      p: 2,
+      gap: isMobile ? 1 : 2,
+      alignItems: isMobile ? "stretch" : "center",
+    }}
+  >
+    <Typography variant="h6" sx={{ width: isMobile ? "100%" : "auto" }}>
+      Filters
+    </Typography>
+    <TextField
+      label="Status"
+      name="status"
+      value={filters.status || ""}
+      onChange={onFilterChange}
+      select
+      fullWidth={isMobile}
+      margin="normal"
+      size={isMobile ? "small" : "medium"}
+    >
+      {statusOptions.map((option) => (
+        <MenuItem key={option} value={option}>
+          {option}
+        </MenuItem>
+      ))}
+    </TextField>
+    <TextField
+      label="Priority"
+      name="priority"
+      value={filters.priority || ""}
+      onChange={onFilterChange}
+      select
+      fullWidth={isMobile}
+      margin="normal"
+      size={isMobile ? "small" : "medium"}
+    >
+      {priorityOptions.map((option) => (
+        <MenuItem key={option.value} value={option.value}>
+          {option.label}
+        </MenuItem>
+      ))}
+    </TextField>
+  </Box>;
+};
+
 const Project = () => {
   const [tasks, setTasks] = useState([]);
   const [open, setOpen] = useState(false);
@@ -97,14 +146,16 @@ const Project = () => {
   const [anchorElFilter, setAnchorElFilter] = useState(null);
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
-  const [sortOption, setSortOption] = useState("");
+  const [setSortOption] = useState("");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   // const navigate = useNavigate();
 
+  // Fetch tasks with filters and sorting
   useEffect(() => {
     setIsLoading(true);
-    fetch("https://spatialops.onrender.com/tasks")
+    const query = new URLSearchParams({ ...filters, ...sort }).toString();
+    fetch(`https://spatialops.onrender.com/tasks?${query}`)
       .then((response) => response.json())
       .then((data) => {
         setTasks(data);
@@ -116,6 +167,7 @@ const Project = () => {
       });
   }, [filters, sort]);
 
+  //Handlers
   const handleOpen = () => {
     setEditable(true);
     setTaskData({
@@ -125,8 +177,35 @@ const Project = () => {
     setOpen(true);
   };
 
+  const handleClose = () => setOpen(false);
   const handleCloseViewDialog = () => {
     setViewDialogOpen(false);
+  };
+
+  const handleInputChange = (e) => {
+    setTaskData({ ...taskData, [e.target.name]: e.target.value });
+  };
+
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSortMenuClick = (event) => {
+    setAnchorElSort(event.currentTarget);
+  };
+
+  const handleSortMenuClose = (sortOption) => {
+    setSort({ ...sort, sortOption: sortOption });
+    setAnchorElSort(null);
+  };
+
+  const handleFilterClick = (event) => {
+    setAnchorElFilter(event.currentTarget);
+  };
+
+  const handleFilterClose = () => {
+    setAnchorElFilter(null);
   };
 
   const copyToClipboard = () => {
@@ -180,12 +259,6 @@ const Project = () => {
     setIsDeleting(false);
   };
 
-  const handleClose = () => setOpen(false);
-
-  const handleInputChange = (e) => {
-    setTaskData({ ...taskData, [e.target.name]: e.target.value });
-  };
-
   const handleSortChange = (sortName, value) => {
     setSort({ ...sort, [sortName]: value });
     fetchTasks();
@@ -209,35 +282,18 @@ const Project = () => {
 
   const handleDialogOpen = () => setOpen(true);
   const handleDialogClose = () => setOpen(false);
-  const handleSortMenuClick = (event) => setAnchorElSort(event.currentTarget);
+
   const handleFilterMenuClick = (event) =>
     setAnchorElFilter(event.currentTarget);
-  const handleSortMenuClose = (sortField) => {
-    setSort({ field: sortField, order: sort.order === "asc" ? "desc" : "asc" });
-    setAnchorElSort(null);
-  };
-  const handleFilterChange = (event) => {
-    const { name, value } = event.target;
-    setFilters({ ...filters, [name]: value });
-  };
 
   const handleSortClick = (event) => {
     setAnchorElSort(event.currentTarget);
   };
 
-  const handleFilterClick = (event) => {
-    setAnchorElFilter(event.currentTarget);
-  };
-
   const handleSortClose = (option) => {
     setSortOption(option);
     setAnchorElSort(null);
-    fetchTasks(); // Refetch tasks with new sort option
-  };
-
-  const handleFilterClose = () => {
-    setAnchorElFilter(null);
-    fetchTasks(); // Refetch tasks with new filter options
+    fetchTasks();
   };
 
   const handleSubmit = () => {
@@ -295,6 +351,26 @@ const Project = () => {
   return (
     <Container component="main" sx={{ mt: 10 }}>
       <Box display="flex" justifyContent="space-between" mb={2}>
+        <FilterPanel filters={filters} onFilterChange={handleFilterChange} />
+        <Tooltip title="Sort">
+          <IconButton onClick={handleSortMenuClick}>
+            <SortIcon />
+          </IconButton>
+        </Tooltip>
+        <Menu
+          anchorEl={anchorElSort}
+          open={Boolean(anchorElSort)}
+          onClose={() => setAnchorElSort(null)}
+        >
+          {["Title", "Status", "Priority"].map((sortOption) => (
+            <MenuItem
+              key={sortOption}
+              onClick={() => handleSortMenuClose(sortOption.toLowerCase())}
+            >
+              {sortOption}
+            </MenuItem>
+          ))}
+        </Menu>
         <Box>
           <Button
             variant="contained"
