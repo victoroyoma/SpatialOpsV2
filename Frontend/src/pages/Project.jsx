@@ -29,7 +29,6 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import SortIcon from "@mui/icons-material/Sort";
 import PersonIcon from "@mui/icons-material/Person";
 import CircleIcon from "@mui/icons-material/Circle";
@@ -143,10 +142,8 @@ const Project = () => {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [currentTaskUrl, setCurrentTaskUrl] = useState("");
   const [anchorElSort, setAnchorElSort] = useState(null);
-  const [anchorElFilter, setAnchorElFilter] = useState(null);
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
-  const [setSortOption] = useState("");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   // const navigate = useNavigate();
@@ -200,14 +197,6 @@ const Project = () => {
     setAnchorElSort(null);
   };
 
-  const handleFilterClick = (event) => {
-    setAnchorElFilter(event.currentTarget);
-  };
-
-  const handleFilterClose = () => {
-    setAnchorElFilter(null);
-  };
-
   const copyToClipboard = () => {
     navigator.clipboard.writeText(currentTaskUrl).then(
       () => {
@@ -257,43 +246,6 @@ const Project = () => {
       })
       .catch((error) => console.error("Error:", error));
     setIsDeleting(false);
-  };
-
-  const handleSortChange = (sortName, value) => {
-    setSort({ ...sort, [sortName]: value });
-    fetchTasks();
-  };
-
-  const fetchTasks = async () => {
-    setIsLoading(true);
-    const query = new URLSearchParams({ ...filters, ...sort }).toString();
-    try {
-      const response = await fetch(
-        `https://spatialops.onrender.com/tasks?${query}`
-      );
-      const data = await response.json();
-      setTasks(data);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDialogOpen = () => setOpen(true);
-  const handleDialogClose = () => setOpen(false);
-
-  const handleFilterMenuClick = (event) =>
-    setAnchorElFilter(event.currentTarget);
-
-  const handleSortClick = (event) => {
-    setAnchorElSort(event.currentTarget);
-  };
-
-  const handleSortClose = (option) => {
-    setSortOption(option);
-    setAnchorElSort(null);
-    fetchTasks();
   };
 
   const handleSubmit = () => {
@@ -371,78 +323,16 @@ const Project = () => {
             </MenuItem>
           ))}
         </Menu>
-        <Box>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleOpen}
-            disabled={isSaving || isDeleting}
-          >
-            Add Task
-          </Button>
-          <IconButton onClick={handleSortMenuClick}>
-            <SortIcon />
-            Sort by
-          </IconButton>
-          <Menu
-            anchorEl={anchorElSort}
-            open={Boolean(anchorElSort)}
-            onClose={() => handleSortMenuClose(null)}
-          >
-            <MenuItem onClick={() => handleSortMenuClose("component")}>
-              Title
-            </MenuItem>
-            <MenuItem onClick={() => handleSortMenuClose("status")}>
-              Status
-            </MenuItem>
-            <MenuItem onClick={() => handleSortMenuClose("priority")}>
-              Priority
-            </MenuItem>
-          </Menu>
-          <IconButton onClick={handleFilterMenuClick}>
-            <FilterListIcon />
-            Filter by
-          </IconButton>
-          <Menu
-            anchorEl={anchorElFilter}
-            open={Boolean(anchorElFilter)}
-            onClose={() => setAnchorElFilter(null)}
-          >
-            <MenuItem>
-              <TextField
-                label="Status"
-                name="status"
-                value={filters.status || ""}
-                onChange={handleFilterChange}
-                select
-                fullWidth
-              >
-                {statusOptions.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </MenuItem>
-            <MenuItem>
-              <TextField
-                label="Priority"
-                name="priority"
-                value={filters.priority || ""}
-                onChange={handleFilterChange}
-                select
-                fullWidth
-              >
-                {priorityOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </MenuItem>
-          </Menu>
-        </Box>
+
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={handleOpen}
+          disabled={isSaving || isDeleting}
+        >
+          Add Task
+        </Button>
       </Box>
 
       <TableContainer
