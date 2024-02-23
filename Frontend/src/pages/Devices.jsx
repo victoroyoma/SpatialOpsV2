@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ErrorLogList from "../components/ErrorLogList";
 import ErrorDetail from "../components/ErrorDetail";
+import { Container } from "@mui/material";
 
 const App = () => {
   const [selectedErrorLog, setSelectedErrorLog] = useState(null);
@@ -14,7 +15,7 @@ const App = () => {
   };
 
   return (
-    <div>
+    <Container component="main" sx={{ mt: 10 }}>
       <ErrorLogList onLogClick={handleLogClick} />
       {selectedErrorLog && (
         <ErrorDetail
@@ -23,7 +24,7 @@ const App = () => {
           errorLog={selectedErrorLog}
         />
       )}
-    </div>
+    </Container>
   );
 };
 
