@@ -11,30 +11,66 @@ import {
   Grid,
   useMediaQuery,
   useTheme,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
 } from "@mui/material";
 
 const ErrorLogList = () => {
   const [errorLogs, setErrorLogs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [newErrorLog, setNewErrorLog] = useState({
+    errorMessage: "",
+    fileName: "",
+    lineNumber: "",
+    createdAt: "",
+    githubUrl: "",
+  });
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
-    const fetchErrorLogs = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch("/error/logs"); // Adjust the endpoint as needed
-        const data = await response.json();
-        setErrorLogs(data);
-      } catch (error) {
-        console.error("Failed to fetch error logs:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchErrorLogs();
+    setLoading(true);
+    // Simulate fetching error logs
+    setTimeout(() => {
+      setErrorLogs([
+        {
+          id: 1,
+          errorMessage: "TypeError: Cannot read properties of undefined",
+          fileName: "ComponentA.js",
+          lineNumber: 42,
+          createdAt: new Date().toISOString(),
+          githubUrl: "https://github.com/path/to/file",
+        },
+        // Add more demo logs as needed
+      ]);
+      setLoading(false);
+    }, 1000);
   }, []);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewErrorLog({ ...newErrorLog, [name]: value });
+  };
+
+  const handleSubmitErrorLog = () => {
+    console.log("Submitting new error log:", newErrorLog);
+    // Here you would typically send the new error log to your backend
+    setOpenDialog(false);
+  };
 
   if (loading) {
     return (
@@ -50,42 +86,69 @@ const ErrorLogList = () => {
   }
 
   return (
-    <TableContainer
-      component={Paper}
-      style={{ maxWidth: "100%", overflowX: "auto" }}
-    >
-      <Table size={isMobile ? "small" : "medium"}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Error Message</TableCell>
-            <TableCell>File</TableCell>
-            <TableCell>Line</TableCell>
-            <TableCell>Time</TableCell>
-            <TableCell>View</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {errorLogs.map((log) => (
-            <TableRow key={log.id}>
-              <TableCell>{log.errorMessage}</TableCell>
-              <TableCell>{log.fileName}</TableCell>
-              <TableCell>{log.lineNumber}</TableCell>
-              <TableCell>{new Date(log.createdAt).toLocaleString()}</TableCell>
-              <TableCell>
-                {/* Link to detailed view or GitHub */}
-                <a
-                  href={log.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View on GitHub
-                </a>
-              </TableCell>
+    <>
+      <Button variant="outlined" onClick={handleOpenDialog}>
+        File Bug Report
+      </Button>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>File a New Bug Report</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            name="errorMessage"
+            label="Error Message"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={newErrorLog.errorMessage}
+            onChange={handleChange}
+          />
+          {/* Include other fields as needed */}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleSubmitErrorLog}>Submit</Button>
+        </DialogActions>
+      </Dialog>
+      <TableContainer
+        component={Paper}
+        style={{ maxWidth: "100%", overflowX: "auto" }}
+      >
+        <Table size={isMobile ? "small" : "medium"}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Error Message</TableCell>
+              <TableCell>File</TableCell>
+              <TableCell>Line</TableCell>
+              <TableCell>Time</TableCell>
+              <TableCell>View</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {errorLogs.map((log) => (
+              <TableRow key={log.id}>
+                <TableCell>{log.errorMessage}</TableCell>
+                <TableCell>{log.fileName}</TableCell>
+                <TableCell>{log.lineNumber}</TableCell>
+                <TableCell>
+                  {new Date(log.createdAt).toLocaleString()}
+                </TableCell>
+                <TableCell>
+                  <a
+                    href={log.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View on GitHub
+                  </a>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 
