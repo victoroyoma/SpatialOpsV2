@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import TaskFilters from "../contexts/TaskFilters";
-// import TaskSort from "../contexts/TaskSort";
-// import { useNavigate } from "react-router-dom";
 import {
   Container,
   Paper,
