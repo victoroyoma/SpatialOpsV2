@@ -8,6 +8,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
 
   const handleLogClick = (log) => {
+    // TODO: Handle log click, possibly fetching more details from the backend
     setSelectedErrorLog(log);
   };
 
@@ -17,6 +18,7 @@ const App = () => {
 
   useEffect(() => {
     setLoading(true);
+    // TODO: Fetch error logs from the backend
     // Simulate fetching error logs
     setTimeout(() => setLoading(false), 2000);
   }, []);

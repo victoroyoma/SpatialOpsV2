@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 
 const ErrorDetail = ({ open, onClose, errorLog }) => {
+  // TODO: Display detailed error information, potentially fetched from the backend
   // Fallback for when errorLog is not provided
   const log = errorLog || {
     errorMessage: "No error message available",
