@@ -21,7 +21,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { Visibility as VisibilityIcon } from "@mui/icons-material";
 import axios from "axios";
