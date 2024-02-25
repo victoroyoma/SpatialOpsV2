@@ -29,16 +29,7 @@ import { format } from "date-fns";
 import ErrorDetail from "./ErrorDetail"; // Adjust the import path as needed
 
 const ErrorLogList = () => {
-  const [errorLogs, setErrorLogs] = useState([
-    {
-      id: "demo-1",
-      errorMessage: "Demo Error Message",
-      fileName: "DemoFile.js",
-      lineNumber: 10,
-      createdAt: new Date().toISOString(),
-      githubUrl: "https://github.com",
-    },
-  ]);
+  const [errorLogs, setErrorLogs] = useState([]);
   const [totalLogs, setTotalLogs] = useState(0);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -99,9 +90,13 @@ const ErrorLogList = () => {
   };
 
   const handleSubmitErrorLog = () => {
+    console.log("Submitting new error log:", newErrorLog);
     axios
       .post("/api/logs", { ...newErrorLog })
-      .then(() => {
+      .then((response) => {
+        const addedLog = response.data;
+        setErrorLogs([...errorLogs, addedLog]);
+
         handleCloseDialog();
         // Optionally refresh the logs list
       })
@@ -222,8 +217,7 @@ const ErrorLogList = () => {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={errorLogs.length} // For demo purposes, using the length of the errorLogs array
-        // count={totalLogs}
+        count={totalLogs}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
