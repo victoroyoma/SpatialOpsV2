@@ -29,19 +29,16 @@ import { format } from "date-fns";
 import ErrorDetail from "./ErrorDetail"; // Adjust the import path as needed
 
 const ErrorLogList = () => {
-  // const [errorLogs, setErrorLogs] = useState([
-  //   // Manually added demo error log
-  //   {
-  //     id: "demo-1",
-  //     errorMessage:
-  //       "TypeError: Cannot read properties of undefined (reading 'length')",
-  //     fileName: "DemoComponent.js",
-  //     lineNumber: 42,
-  //     createdAt: new Date().toISOString(),
-  //     githubUrl: "https://github.com/your-repo/path/to/DemoComponent.js#L42",
-  //   },
-  // ]);
-  const [errorLogs, setErrorLogs] = useState([]);
+  const [errorLogs, setErrorLogs] = useState([
+    {
+      id: "demo-1",
+      errorMessage: "Demo Error Message",
+      fileName: "DemoFile.js",
+      lineNumber: 10,
+      createdAt: new Date().toISOString(),
+      githubUrl: "https://github.com",
+    },
+  ]);
   const [totalLogs, setTotalLogs] = useState(0);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -64,12 +61,13 @@ const ErrorLogList = () => {
     axios
       .get(`/api/logs?page=${page}&limit=${rowsPerPage}`)
       .then((response) => {
-        setErrorLogs(response.data.logs); // Adjust according to your API response structure
+        setErrorLogs(response.data.logs || []); // Adjust according to your API response structure
         setTotalLogs(response.data.total);
         setLoading(false);
       })
       .catch((error) => {
         console.error("Failed to fetch error logs:", error);
+        setErrorLogs([]);
         setLoading(false);
       });
   }, [page, rowsPerPage]);
@@ -124,6 +122,7 @@ const ErrorLogList = () => {
     );
   }
 
+  console.log(errorLogs);
   return (
     <>
       <Button variant="outlined" onClick={handleOpenDialog}>
@@ -193,7 +192,7 @@ const ErrorLogList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {errorLogs.map((log) => (
+            {errorLogs?.map((log) => (
               <TableRow key={log.id}>
                 <TableCell>{log.errorMessage}</TableCell>
                 <TableCell>{log.fileName}</TableCell>
