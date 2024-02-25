@@ -23,8 +23,9 @@ import {
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import axios from "axios";
 import { Visibility as VisibilityIcon } from "@mui/icons-material";
+import axios from "axios";
+import { format } from "date-fns";
 import ErrorDetail from "./ErrorDetail"; // Adjust the import path as needed
 
 const ErrorLogList = () => {
@@ -198,7 +199,7 @@ const ErrorLogList = () => {
                 <TableCell>{log.fileName}</TableCell>
                 <TableCell>{log.lineNumber}</TableCell>
                 <TableCell>
-                  {new Date(log.createdAt).toLocaleString()}
+                  {format(new Date(log.createdAt), "PPPpp")}
                 </TableCell>
                 <TableCell>
                   <Link
