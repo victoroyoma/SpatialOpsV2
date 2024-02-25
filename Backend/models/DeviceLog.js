@@ -1,10 +1,12 @@
 // module.exports = (sequelize, DataTypes) => {
-//   return sequelize.define("DeviceLog", {
-//     timestamp: DataTypes.DATE,
-//     level: DataTypes.STRING,
-//     message: DataTypes.TEXT,
-//     deviceInfo: DataTypes.JSONB,
+//   const DeviceLog = sequelize.define("DeviceLog", {
+//     errorMessage: DataTypes.TEXT,
 //     stackTrace: DataTypes.TEXT,
-//     sourceCodeLink: DataTypes.STRING,
+//     fileName: DataTypes.STRING,
+//     lineNumber: DataTypes.INTEGER,
+//     columnNumber: DataTypes.INTEGER,
+//     errorTime: DataTypes.DATE,
+//     githubUrl: DataTypes.STRING, // URL to the source code on GitHub
 //   });
+//   return DeviceLog;
 // };

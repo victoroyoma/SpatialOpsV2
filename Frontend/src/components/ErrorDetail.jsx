@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -7,18 +7,59 @@ import {
   Link,
   DialogActions,
   Button,
+  CircularProgress,
 } from "@mui/material";
+import axios from "axios";
 
-const ErrorDetail = ({ open, onClose, errorLog }) => {
-  // TODO: Display detailed error information, potentially fetched from the backend
-  // Fallback for when errorLog is not provided
-  const log = errorLog || {
-    errorMessage: "No error message available",
-    stackTrace: "No stack trace available",
-    fileName: "No file specified",
-    lineNumber: "N/A",
-    githubUrl: "#",
-  };
+const ErrorDetail = ({ open, onClose, errorLogId }) => {
+  const [log, setLog] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (open && errorLogId) {
+      setLoading(true);
+      axios
+        .get(`/api/logs/${errorLogId}`)
+        .then((response) => {
+          setLog(response.data);
+          setError("");
+        })
+        .catch((err) => {
+          console.error("Failed to fetch error log details:", err);
+          setError("Failed to fetch error log details");
+          setLog(null);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [open, errorLogId]);
+
+  if (loading) {
+    return (
+      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+        <DialogContent dividers>
+          <CircularProgress />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  if (error) {
+    return (
+      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+        <DialogContent dividers>
+          <Typography color="error">{error}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  if (!log) {
+    return null;
+  }
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>

@@ -7,28 +7,52 @@ import {
   TableHead,
   TableRow,
   Paper,
+  TablePagination,
   CircularProgress,
   Grid,
-  useMediaQuery,
-  useTheme,
   Button,
+  IconButton,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Link,
   TextField,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import axios from "axios";
+import { Visibility as VisibilityIcon } from "@mui/icons-material";
+import ErrorDetail from "./ErrorDetail"; // Adjust the import path as needed
 
 const ErrorLogList = () => {
-  const [errorLogs, setErrorLogs] = useState([]);
+  const [errorLogs, setErrorLogs] = useState([
+    // Manually added demo error log
+    {
+      id: "demo-1",
+      errorMessage:
+        "TypeError: Cannot read properties of undefined (reading 'length')",
+      fileName: "DemoComponent.js",
+      lineNumber: 42,
+      createdAt: new Date().toISOString(),
+      githubUrl: "https://github.com/your-repo/path/to/DemoComponent.js#L42",
+    },
+  ]);
+  // const [errorLogs, setErrorLogs] = useState([]);
+  const [totalLogs, setTotalLogs] = useState(0);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedErrorLog, setSelectedErrorLog] = useState(null);
   const [newErrorLog, setNewErrorLog] = useState({
     errorMessage: "",
     fileName: "",
     lineNumber: "",
-    createdAt: "",
-    githubUrl: "",
+    createdAt: new Date(),
   });
 
   const theme = useTheme();
@@ -36,40 +60,53 @@ const ErrorLogList = () => {
 
   useEffect(() => {
     setLoading(true);
-    // Simulate fetching error logs
-    setTimeout(() => {
-      setErrorLogs([
-        {
-          id: 1,
-          errorMessage: "TypeError: Cannot read properties of undefined",
-          fileName: "ComponentA.js",
-          lineNumber: 42,
-          createdAt: new Date().toISOString(),
-          githubUrl: "https://github.com/path/to/file",
-        },
-        // Add more demo logs as needed
-      ]);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    axios
+      .get(`/api/logs?page=${page}&limit=${rowsPerPage}`)
+      .then((response) => {
+        setErrorLogs(response.data.logs); // Adjust according to your API response structure
+        setTotalLogs(response.data.total);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch error logs:", error);
+        setLoading(false);
+      });
+  }, [page, rowsPerPage]);
 
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewErrorLog({ ...newErrorLog, [name]: value });
   };
 
+  const handleDateChange = (date) =>
+    setNewErrorLog({ ...newErrorLog, createdAt: date });
+
+  const handleChangePage = (event, newPage) => setPage(newPage);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleOpenDetail = (log) => {
+    setSelectedErrorLog(log);
+    setDetailOpen(true);
+  };
+
+  const handleCloseDetail = () => {
+    setDetailOpen(false);
+  };
+
   const handleSubmitErrorLog = () => {
-    console.log("Submitting new error log:", newErrorLog);
-    // Here you would typically send the new error log to your backend
-    setOpenDialog(false);
+    axios
+      .post("/api/logs", { ...newErrorLog })
+      .then(() => {
+        handleCloseDialog();
+        // Optionally refresh the logs list
+      })
+      .catch((error) => console.error("Failed to submit error log:", error));
   };
 
   if (loading) {
@@ -80,6 +117,7 @@ const ErrorLogList = () => {
         alignItems="center"
         style={{ minHeight: "100vh" }}
       >
+        Fetching logs
         <CircularProgress />
       </Grid>
     );
@@ -104,7 +142,34 @@ const ErrorLogList = () => {
             value={newErrorLog.errorMessage}
             onChange={handleChange}
           />
-          {/* Include other fields as needed */}
+          <TextField
+            margin="dense"
+            name="fileName"
+            label="File Name"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={newErrorLog.fileName}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            name="lineNumber"
+            label="Line Number"
+            type="number"
+            fullWidth
+            variant="standard"
+            value={newErrorLog.lineNumber}
+            onChange={handleChange}
+          />
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DateTimePicker
+              label="Error Occurrence Date & Time"
+              value={newErrorLog.createdAt}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField {...params} fullWidth />}
+            />
+          </LocalizationProvider>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
@@ -122,7 +187,8 @@ const ErrorLogList = () => {
               <TableCell>File</TableCell>
               <TableCell>Line</TableCell>
               <TableCell>Time</TableCell>
-              <TableCell>View</TableCell>
+              <TableCell>GitHub URL</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -135,19 +201,41 @@ const ErrorLogList = () => {
                   {new Date(log.createdAt).toLocaleString()}
                 </TableCell>
                 <TableCell>
-                  <a
+                  <Link
                     href={log.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     View on GitHub
-                  </a>
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleOpenDetail(log)}>
+                    <VisibilityIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={errorLogs.length} // For demo purposes, using the length of the errorLogs array
+        // count={totalLogs}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      {selectedErrorLog && (
+        <ErrorDetail
+          open={detailOpen}
+          onClose={handleCloseDetail}
+          errorLog={selectedErrorLog}
+        />
+      )}
     </>
   );
 };
