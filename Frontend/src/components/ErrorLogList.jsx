@@ -29,19 +29,19 @@ import { format } from "date-fns";
 import ErrorDetail from "./ErrorDetail"; // Adjust the import path as needed
 
 const ErrorLogList = () => {
-  const [errorLogs, setErrorLogs] = useState([
-    // Manually added demo error log
-    {
-      id: "demo-1",
-      errorMessage:
-        "TypeError: Cannot read properties of undefined (reading 'length')",
-      fileName: "DemoComponent.js",
-      lineNumber: 42,
-      createdAt: new Date().toISOString(),
-      githubUrl: "https://github.com/your-repo/path/to/DemoComponent.js#L42",
-    },
-  ]);
-  // const [errorLogs, setErrorLogs] = useState([]);
+  // const [errorLogs, setErrorLogs] = useState([
+  //   // Manually added demo error log
+  //   {
+  //     id: "demo-1",
+  //     errorMessage:
+  //       "TypeError: Cannot read properties of undefined (reading 'length')",
+  //     fileName: "DemoComponent.js",
+  //     lineNumber: 42,
+  //     createdAt: new Date().toISOString(),
+  //     githubUrl: "https://github.com/your-repo/path/to/DemoComponent.js#L42",
+  //   },
+  // ]);
+  const [errorLogs, setErrorLogs] = useState([]);
   const [totalLogs, setTotalLogs] = useState(0);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
