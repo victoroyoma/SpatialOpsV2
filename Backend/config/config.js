@@ -2,12 +2,12 @@ require("dotenv").config();
 
 module.exports = {
   development: {
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: "postgres", // Make sure this is specified
+    username: "spatialdb_user",
+    password: "QcGTkysjRkg7K4OEuvqcgIFkmbh2mWYW",
+    database: "spatialdb",
+    host: "dpg-cn2cdnacn0vc738v6as0-a.frankfurt-postgres.render.com",
+    port: 5432,
+    dialect: "postgres",
     dialectOptions: {
       ssl: {
         require: true,
@@ -16,9 +16,31 @@ module.exports = {
     },
   },
   test: {
-    // Test configuration...
+    username: "spatialdb_user",
+    password: "QcGTkysjRkg7K4OEuvqcgIFkmbh2mWYW",
+    database: "spatialdb",
+    host: "dpg-cn2cdnacn0vc738v6as0-a.frankfurt-postgres.render.com",
+    port: 5432,
+    dialect: "postgres",
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   },
   production: {
-    // Production configuration...
+    username: "spatialdb_user",
+    password: "QcGTkysjRkg7K4OEuvqcgIFkmbh2mWYW",
+    database: "spatialdb",
+    host: "dpg-cn2cdnacn0vc738v6as0-a.frankfurt-postgres.render.com",
+    port: 5432,
+    dialect: "postgres",
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   },
 };

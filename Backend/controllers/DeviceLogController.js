@@ -22,7 +22,7 @@ const createLog = async (req, res) => {
       column: frame.columnNumber,
     });
 
-    const githubUrl = `https://github.com/yourusername/yourrepository/blob/main/${originalPosition.source}#L${originalPosition.line}`;
+    const githubUrl = `https://github.com/victoroyoma/SpatialOpsV2/tree/main/${originalPosition.source}#L${originalPosition.line}`;
     const newLog = await DeviceLog.create({
       errorMessage,
       stackTrace,
