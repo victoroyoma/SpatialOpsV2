@@ -1,4 +1,3 @@
-// controllers/DeviceLogController.js
 const { DeviceLog } = require("../models");
 const ErrorStackParser = require("error-stack-parser");
 const { SourceMapConsumer } = require("source-map");
