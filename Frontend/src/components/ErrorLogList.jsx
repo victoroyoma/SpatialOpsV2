@@ -90,13 +90,12 @@ const ErrorLogList = () => {
   };
 
   const handleSubmitErrorLog = () => {
-    console.log("Submitting new error log:", newErrorLog);
     axios
-      .post("/api/logs", { ...newErrorLog })
+      .post("https://spatial-ops-v2.vercel.app/api/logs", newErrorLog)
       .then((response) => {
         const addedLog = response.data;
         setErrorLogs([...errorLogs, addedLog]);
-
+        console.log("Log submitted:", response.data);
         handleCloseDialog();
         // Optionally refresh the logs list
       })
