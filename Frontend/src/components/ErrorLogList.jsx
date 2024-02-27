@@ -48,19 +48,21 @@ const ErrorLogList = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get(`/api/logs?page=${page}&limit=${rowsPerPage}`)
-      .then((response) => {
-        setErrorLogs(response.data.logs || []); // Adjust according to your API response structure
+    const fetchErrorLogs = async () => {
+      try {
+        const response = await axios.get(
+          `https://spatial-ops-v2.vercel.app/api/logs?page=${page}&limit=${rowsPerPage}`
+        );
+        setErrorLogs(response.data.logs);
         setTotalLogs(response.data.total);
-        setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Failed to fetch error logs:", error);
-        setErrorLogs([]);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchErrorLogs();
   }, [page, rowsPerPage]);
 
   const handleOpenDialog = () => setOpenDialog(true);
@@ -74,9 +76,9 @@ const ErrorLogList = () => {
   const handleDateChange = (date) =>
     setNewErrorLog({ ...newErrorLog, createdAt: date });
 
-  const handleChangePage = (event, newPage) => setPage(newPage);
+  const handleChangePage = (_, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
@@ -89,17 +91,17 @@ const ErrorLogList = () => {
     setDetailOpen(false);
   };
 
-  const handleSubmitErrorLog = () => {
-    axios
-      .post("https://spatial-ops-v2.vercel.app/api/logs", newErrorLog)
-      .then((response) => {
-        const addedLog = response.data;
-        setErrorLogs([...errorLogs, addedLog]);
-        console.log("Log submitted:", response.data);
-        handleCloseDialog();
-        // Optionally refresh the logs list
-      })
-      .catch((error) => console.error("Failed to submit error log:", error));
+  const handleSubmitErrorLog = async () => {
+    try {
+      const { data } = await axios.post(
+        "https://spatial-ops-v2.vercel.app/api/logs",
+        newErrorLog
+      );
+      setErrorLogs((prevLogs) => [...prevLogs, data]);
+      handleCloseDialog();
+    } catch (error) {
+      console.error("Failed to submit error log:", error);
+    }
   };
 
   if (loading) {
