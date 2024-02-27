@@ -30,7 +30,7 @@ app.use("/api/dev-gallery", devGalleryRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/tasks", taskRoutes);
 app.use("/api", messagingRoutes);
-app.use("/api", deviceLogRoutes);
+app.use("/api/logs", deviceLogRoutes);
 
 //sync({ force: true }) for Clearing and Creating DB
 sequelize.sync().then(() => {
