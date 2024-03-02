@@ -77,6 +77,10 @@ const statusColors = {
   "In Progress": "blue",
   Completed: "green",
 };
+const milestoneOptions = [
+  { value: "M3", label: "M3 - Current Milestone" },
+  { value: "M4", label: "M4 - Next Milestone" },
+];
 
 const FilterPanel = ({ filters, onFilterChange }) => {
   const theme = useTheme();
@@ -505,6 +509,7 @@ const Project = () => {
             ))}
           </TextField>
           <TextField
+            select
             name="milestone"
             label="Milestone"
             fullWidth
@@ -512,7 +517,13 @@ const Project = () => {
             value={taskData.milestone}
             onChange={handleInputChange}
             disabled={!editable}
-          />
+          >
+            {milestoneOptions.map((option, index) => (
+              <MenuItem key={index} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </TextField>
           <TextField
             select
             name="priority"
