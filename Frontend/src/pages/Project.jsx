@@ -518,9 +518,9 @@ const Project = () => {
             onChange={handleInputChange}
             disabled={!editable}
           >
-            {milestoneOptions.map((option, index) => (
-              <MenuItem key={index} value={option}>
-                {option}
+            {milestoneOptions.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
               </MenuItem>
             ))}
           </TextField>

@@ -61,7 +61,8 @@ const updateTask = async (req, res) => {
       throw new Error("Task not found");
     }
   } catch (err) {
-    res.status(500).send(err.message);
+    console.error("Error updating task:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
