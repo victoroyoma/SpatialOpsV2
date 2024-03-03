@@ -12,6 +12,12 @@ import {
   useMediaQuery,
   IconButton,
   Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  CircularProgress,
+  TextField,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from "@mui/icons-material/Home";
@@ -22,10 +28,15 @@ import CollectionsIcon from "@mui/icons-material/Collections";
 import LoginIcon from "@mui/icons-material/Login";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import BugReportIcon from "@mui/icons-material/BugReport";
+import html2canvas from "html2canvas";
 import { getLoggedInUser } from "../utils/userUtils";
 
 const NavBar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [bugDialogOpen, setBugDialogOpen] = useState(false);
+  const [bugDescription, setBugDescription] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const loggedInUser = getLoggedInUser();
@@ -33,6 +44,27 @@ const NavBar = () => {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const toggleBugDialog = () => {
+    setBugDialogOpen(!bugDialogOpen);
+  };
+
+  const handleFileBugClick = () => {
+    html2canvas(document.body).then((canvas) => {
+      console.log(canvas);
+      setBugDialogOpen(true);
+    });
+  };
+
+  const handleBugReportSubmit = () => {
+    setIsUploading(true);
+    setTimeout(() => {
+      setIsUploading(false);
+      console.log("Bug reported:", bugDescription);
+      setBugDialogOpen(false);
+      setBugDescription("");
+    }, 2000);
   };
 
   const logout = () => {
@@ -160,8 +192,18 @@ const NavBar = () => {
                   />
                 </Box>
               )}
+              <IconButton
+                color="inherit"
+                onClick={toggleBugDialog}
+                sx={{ ml: 2 }}
+              >
+                <BugReportIcon />
+              </IconButton>
             </Box>
           )}
+          <IconButton color="inherit" onClick={handleFileBugClick}>
+            <BugReportIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Box component="nav">
@@ -175,9 +217,35 @@ const NavBar = () => {
           {drawer}
         </Drawer>
       </Box>
-      <Box component="main" sx={{ flexGrow: 1 }}>
-        {/* Page content goes here */}
-      </Box>
+      <Box component="main" sx={{ flexGrow: 1 }}></Box>
+      <Dialog open={bugDialogOpen} onClose={() => setBugDialogOpen(false)}>
+        <DialogTitle>File a Bug</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="bugDescription"
+            label="Bug Description"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={bugDescription}
+            onChange={(e) => setBugDescription(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setBugDialogOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleBugReportSubmit}
+            color="primary"
+            disabled={isUploading}
+          >
+            {isUploading ? <CircularProgress size={24} /> : "Submit"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
