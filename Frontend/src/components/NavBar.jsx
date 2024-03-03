@@ -46,10 +46,6 @@ const NavBar = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const toggleBugDialog = () => {
-    setBugDialogOpen(!bugDialogOpen);
-  };
-
   const handleFileBugClick = () => {
     html2canvas(document.body).then((canvas) => {
       console.log(canvas);
@@ -192,17 +188,11 @@ const NavBar = () => {
                   />
                 </Box>
               )}
-              <IconButton
-                color="inherit"
-                onClick={toggleBugDialog}
-                sx={{ ml: 2 }}
-              >
-                <BugReportIcon />
-              </IconButton>
             </Box>
           )}
+
           <IconButton color="inherit" onClick={handleFileBugClick}>
-            <BugReportIcon />
+            Bug <BugReportIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
