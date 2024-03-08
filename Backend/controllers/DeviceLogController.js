@@ -1,22 +1,26 @@
+const fs = require("fs").promises;
+const path = require("path");
 const { DeviceLog } = require("../models");
 const ErrorStackParser = require("error-stack-parser");
 const { SourceMapConsumer } = require("source-map");
 
 const createLog = async (req, res) => {
   try {
-    const {
-      errorMessage,
-      stackTrace,
-      fileName,
-      lineNumber,
-      columnNumber,
-      errorTime,
-    } = req.body;
-    const parsedStack = ErrorStackParser.parse({ stack: stackTrace });
+    const { errorMessage, stackTrace, errorTime } = req.body;
+
+    // Example of loading a source map file - adjust path as necessary
+    const sourceMapPath = path.join(
+      __dirname,
+      "../path/to/your/sourcemap/file.map"
+    );
+    const sourceMapData = await fs.readFile(sourceMapPath, "utf8");
+    const sourceMap = await new SourceMapConsumer(sourceMapData);
+
+    const errorObject = new Error(stackTrace);
+    const parsedStack = ErrorStackParser.parse(errorObject);
     const frame = parsedStack[0]; // Assuming we're only interested in the first frame
 
-    const consumer = await new SourceMapConsumer(sourceMapFile);
-    const originalPosition = consumer.originalPositionFor({
+    const originalPosition = sourceMap.originalPositionFor({
       line: frame.lineNumber,
       column: frame.columnNumber,
     });
@@ -31,9 +35,11 @@ const createLog = async (req, res) => {
       errorTime,
       githubUrl,
     });
-    consumer.destroy(); // Clean up the source map consumer
+
+    sourceMap.destroy(); // Clean up the source map consumer
     res.status(201).json(newLog);
   } catch (error) {
+    console.error("Error creating log:", error);
     res.status(500).json({ error: error.message });
   }
 };

@@ -95,7 +95,12 @@ const ErrorLogList = () => {
     try {
       const { data } = await axios.post(
         "https://spatial-ops-v2.vercel.app/api/logs",
-        newErrorLog
+        newErrorLog,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       setErrorLogs((prevLogs) => [...prevLogs, data]);
       handleCloseDialog();
