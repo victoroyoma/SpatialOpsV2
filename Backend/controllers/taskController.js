@@ -13,7 +13,11 @@ const getTasks = async (req, res) => {
 
     let orderArray = [];
     if (sort && order) {
-      orderArray.push([sort, order]);
+      const sorts = sort.split(",");
+      const orders = order.split(",");
+      sorts.forEach((sortField, index) => {
+        orderArray.push([sortField, orders[index] || "ASC"]);
+      });
     }
 
     const tasks = await Task.findAll({ where, order: orderArray });

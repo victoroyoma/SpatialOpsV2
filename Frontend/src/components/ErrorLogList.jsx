@@ -26,14 +26,14 @@ import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { Visibility as VisibilityIcon } from "@mui/icons-material";
 import axios from "axios";
 import { format } from "date-fns";
-import ErrorDetail from "./ErrorDetail"; // Adjust the import path as needed
+import ErrorDetail from "./ErrorDetail";
 
 const ErrorLogList = () => {
   const [errorLogs, setErrorLogs] = useState([]);
   const [totalLogs, setTotalLogs] = useState(0);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedErrorLog, setSelectedErrorLog] = useState(null);
@@ -49,6 +49,7 @@ const ErrorLogList = () => {
 
   useEffect(() => {
     const fetchErrorLogs = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `https://spatial-ops-v2.vercel.app/api/logs?page=${page}&limit=${rowsPerPage}`
@@ -103,6 +104,7 @@ const ErrorLogList = () => {
         }
       );
       setErrorLogs((prevLogs) => [...prevLogs, data]);
+      setTotalLogs(totalLogs + 1);
       handleCloseDialog();
     } catch (error) {
       console.error("Failed to submit error log:", error);
@@ -117,13 +119,11 @@ const ErrorLogList = () => {
         alignItems="center"
         style={{ minHeight: "100vh" }}
       >
-        Fetching logs
         <CircularProgress />
       </Grid>
     );
   }
 
-  console.log(errorLogs);
   return (
     <>
       <Button variant="outlined" onClick={handleOpenDialog}>
@@ -163,6 +163,7 @@ const ErrorLogList = () => {
             value={newErrorLog.lineNumber}
             onChange={handleChange}
           />
+
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
               label="Error Occurrence Date & Time"

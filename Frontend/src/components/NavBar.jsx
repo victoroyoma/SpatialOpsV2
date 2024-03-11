@@ -16,9 +16,9 @@ import {
   DialogContent,
   DialogTitle,
   DialogActions,
-  CircularProgress,
   TextField,
 } from "@mui/material";
+import axios from "axios";
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from "@mui/icons-material/Home";
 import MessageIcon from "@mui/icons-material/Message";
@@ -36,7 +36,8 @@ const NavBar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [bugDialogOpen, setBugDialogOpen] = useState(false);
   const [bugDescription, setBugDescription] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
+  const [screenshotBase64, setScreenshotBase64] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const loggedInUser = getLoggedInUser();
@@ -48,19 +49,37 @@ const NavBar = () => {
 
   const handleFileBugClick = () => {
     html2canvas(document.body).then((canvas) => {
-      console.log(canvas);
-      setBugDialogOpen(true);
+      canvas.toBlob((blob) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          setScreenshotBase64(reader.result);
+          setBugDialogOpen(true);
+        };
+      }, "image/jpeg");
     });
   };
 
   const handleBugReportSubmit = () => {
-    setIsUploading(true);
-    setTimeout(() => {
-      setIsUploading(false);
-      console.log("Bug reported:", bugDescription);
-      setBugDialogOpen(false);
-      setBugDescription("");
-    }, 2000);
+    setIsSubmitting(true);
+    axios
+      .post("https://spatial-ops-v2.vercel.app/api/bug-reports", {
+        screenshotBase64: screenshotBase64,
+        description: bugDescription,
+      })
+      .then((response) => {
+        console.log(response.data);
+        // Handle successful submission here
+        setBugDialogOpen(false);
+        setBugDescription("");
+        setScreenshotBase64("");
+      })
+      .catch((error) => {
+        console.error("Failed to submit bug report:", error);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   const logout = () => {
@@ -224,15 +243,9 @@ const NavBar = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setBugDialogOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button
-            onClick={handleBugReportSubmit}
-            color="primary"
-            disabled={isUploading}
-          >
-            {isUploading ? <CircularProgress size={24} /> : "Submit"}
+          <Button onClick={() => setBugDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleBugReportSubmit} disabled={isSubmitting}>
+            Submit
           </Button>
         </DialogActions>
       </Dialog>

@@ -1,10 +1,9 @@
-// In your taskRoutes.js or a new bugRoutes.js
+// bugRoutes.js
 
 const express = require("express");
 const router = express.Router();
-const taskController = require("../controllers/taskController");
+const bugController = require("../controllers/bugController");
 
-// Add the new bug report endpoint
-router.post("/report-bug", taskController.createBugReport);
+router.post("/logs", bugController.createBugReport);
 
 module.exports = router;
