@@ -33,6 +33,7 @@ app.use("/tasks", taskRoutes);
 app.use("/api", messagingRoutes);
 app.use("/api/logs", deviceLogRoutes);
 app.use("/api", bugReportRoutes);
+app.use("/api", bugRoutes);
 
 //sync({ force: true }) for Clearing and Creating DB
 sequelize.sync().then(() => {

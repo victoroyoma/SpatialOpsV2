@@ -4,6 +4,6 @@ const express = require("express");
 const router = express.Router();
 const bugController = require("../controllers/bugController");
 
-router.post("/logs", bugController.createBugReport);
+router.post("/bug-reports", bugController.createBugReport);
 
 module.exports = router;
