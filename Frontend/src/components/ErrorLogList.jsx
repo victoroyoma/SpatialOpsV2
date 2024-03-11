@@ -52,7 +52,7 @@ const ErrorLogList = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `https://spatial-ops-v2.vercel.app/api/logs?page=${page}&limit=${rowsPerPage}`
+          `https://spatial-ops-v2.vercel.app/api/bug-reports?page=${page}&limit=${rowsPerPage}`
         );
         setErrorLogs(response.data.logs);
         setTotalLogs(response.data.total);
@@ -95,7 +95,7 @@ const ErrorLogList = () => {
   const handleSubmitErrorLog = async () => {
     try {
       const { data } = await axios.post(
-        "https://spatial-ops-v2.vercel.app/api/logs",
+        "https://spatial-ops-v2.vercel.app/api/bug-reports",
         newErrorLog,
         {
           headers: {

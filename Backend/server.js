@@ -10,6 +10,7 @@ const taskRoutes = require("./routes/taskRoutes");
 const devGalleryRoutes = require("./routes/devGalleryRoutes");
 const messagingRoutes = require("./routes/messagingRoutes");
 const deviceLogRoutes = require("./routes/deviceLogRoutes");
+const bugReportRoutes = require("./routes/bugReportRoutes");
 
 const { sequelize } = require("./models/index");
 
@@ -31,6 +32,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/tasks", taskRoutes);
 app.use("/api", messagingRoutes);
 app.use("/api/logs", deviceLogRoutes);
+app.use("/api", bugReportRoutes);
 
 //sync({ force: true }) for Clearing and Creating DB
 sequelize.sync().then(() => {
