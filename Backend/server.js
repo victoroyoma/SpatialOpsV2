@@ -11,6 +11,7 @@ const devGalleryRoutes = require("./routes/devGalleryRoutes");
 const messagingRoutes = require("./routes/messagingRoutes");
 const deviceLogRoutes = require("./routes/deviceLogRoutes");
 const bugReportRoutes = require("./routes/bugReportRoutes");
+const bugRoutes = require("./routes/bugRoutes");
 
 const { sequelize } = require("./models/index");
 
