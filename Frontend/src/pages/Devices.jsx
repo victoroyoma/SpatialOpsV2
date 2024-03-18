@@ -62,17 +62,18 @@ function DeviceLog() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {bugReports.map((report) => (
-                  <TableRow key={report.id}>
-                    <TableCell>{report.id}</TableCell>
-                    <TableCell>{report.errorMessage}</TableCell>
-                    <TableCell>{report.component}</TableCell>
-                    <TableCell>{report.lineNumber}</TableCell>
-                    <TableCell>
-                      {new Date(report.occurredAt).toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {Array.isArray(bugReports) &&
+                  bugReports.map((report) => (
+                    <TableRow key={report.id}>
+                      <TableCell>{report.id}</TableCell>
+                      <TableCell>{report.errorMessage}</TableCell>
+                      <TableCell>{report.component}</TableCell>
+                      <TableCell>{report.lineNumber}</TableCell>
+                      <TableCell>
+                        {new Date(report.occurredAt).toLocaleString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </Paper>
