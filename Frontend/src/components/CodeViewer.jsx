@@ -4,9 +4,8 @@ import { Container, Typography } from "@mui/material";
 // import SyntaxHighlighter from 'react-syntax-highlighter';
 // import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
-function CodeViewer({ match }) {
+function CodeViewer({ filePath }) {
   const [codeContent, setCodeContent] = useState("");
-  const filePath = match.params.filePath; // Assuming you're using react-router
 
   useEffect(() => {
     // TODO: Fetch the content of the file from GitHub or your backend

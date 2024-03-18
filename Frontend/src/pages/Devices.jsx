@@ -9,14 +9,19 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Box,
+  Modal,
+  Typography,
 } from "@mui/material";
 import axios from "axios"; // Assuming axios for HTTP requests
 import BugReportDialog from "../components/BugReportDialog";
 import Logs from "../components/Logs";
+import CodeViewer from "../components/CodeViewer";
 
 function DeviceLog() {
   const [bugDialogOpen, setBugDialogOpen] = useState(false);
   const [bugReports, setBugReports] = useState([]);
+  const [selectedLog, setSelectedLog] = useState(null);
 
   useEffect(() => {
     // Fetch bug reports from your backend
@@ -33,6 +38,29 @@ function DeviceLog() {
     fetchBugReports();
   }, []);
 
+  const handleOpenBugDialog = () => setBugDialogOpen(true);
+  const handleCloseBugDialog = () => setBugDialogOpen(false);
+
+  // Handler for selecting a log entry
+  const handleSelectLog = (log) => {
+    setSelectedLog(log);
+  };
+
+  // Modal style
+  const modalStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "80%",
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+    overflow: "scroll",
+    height: "80%",
+    display: "block",
+  };
+
   return (
     <Container component="main" sx={{ mt: 10 }} maxWidth="lg">
       <Grid container spacing={2}>
@@ -40,7 +68,7 @@ function DeviceLog() {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => setBugDialogOpen(true)}
+            onClick={handleOpenBugDialog}
           >
             File Bug
           </Button>
@@ -79,11 +107,20 @@ function DeviceLog() {
           </Paper>
         </Grid>
       </Grid>
-      {/* BugReportDialog for capturing and submitting a bug report */}
-      <BugReportDialog
-        open={bugDialogOpen}
-        onClose={() => setBugDialogOpen(false)}
-      />
+      <BugReportDialog open={bugDialogOpen} onClose={handleCloseBugDialog} />
+      <Modal
+        open={selectedLog !== null}
+        onClose={() => setSelectedLog(null)}
+        aria-labelledby="code-viewer-modal"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Code Viewer
+          </Typography>
+          {selectedLog && <CodeViewer filePath={selectedLog.filePath} />}
+        </Box>
+      </Modal>
     </Container>
   );
 }
