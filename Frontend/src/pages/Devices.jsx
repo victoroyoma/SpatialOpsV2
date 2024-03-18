@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Button, Grid } from "@material-ui/core";
+import { Container, Button, Grid } from "@mui/material";
 import BugReportDialog from "../components/BugReportDialog";
 import Logs from "../components/Logs";
 // Assuming Logs component is used for displaying logs and provides links to GitHub

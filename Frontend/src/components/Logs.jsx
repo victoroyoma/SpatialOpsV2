@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { List, ListItem, ListItemText, Link } from "@material-ui/core";
+import { List, ListItem, ListItemText, Link } from "@mui/material";
 
 function Logs() {
   const [logs, setLogs] = useState([]);

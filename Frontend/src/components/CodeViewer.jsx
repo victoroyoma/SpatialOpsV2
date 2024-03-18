@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography } from "@material-ui/core";
+import { Container, Typography } from "@mui/material";
 // Assuming you have a component for syntax highlighting
 // import SyntaxHighlighter from 'react-syntax-highlighter';
 // import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';

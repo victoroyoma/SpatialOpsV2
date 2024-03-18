@@ -6,7 +6,7 @@ import {
   DialogActions,
   TextField,
   Button,
-} from "@material-ui/core";
+} from "@mui/material";
 
 function BugReportDialog({ open, onClose }) {
   const [description, setDescription] = useState("");
