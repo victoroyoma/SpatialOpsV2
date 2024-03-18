@@ -17,7 +17,7 @@ function DeviceLog() {
   };
 
   return (
-    <Container maxWidth="lg">
+    <Container component="main" sx={{ mt: 10 }} maxWidth="lg">
       <Grid container spacing={2} style={{ marginTop: "20px" }}>
         <Grid item xs={12}>
           <Button
