@@ -17,6 +17,9 @@ const DevGalleryItem = require("./DevGalleryItem")(
   sequelize,
   Sequelize.DataTypes
 );
+const DeviceLog = require("./DeviceLog")(sequelize, Sequelize.DataTypes);
+const HtmlCapture = require("./HtmlCapture")(sequelize, Sequelize.DataTypes);
+const BugReport = require("./BugReport")(sequelize, Sequelize.DataTypes);
 
 // Users can create many messages
 User.hasMany(Message, { foreignKey: "userId" });
@@ -42,4 +45,7 @@ module.exports = {
   Task,
   DevGalleryItem,
   Thread,
+  DeviceLog,
+  HtmlCapture,
+  BugReport,
 };
