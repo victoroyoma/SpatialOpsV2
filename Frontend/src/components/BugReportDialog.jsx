@@ -22,8 +22,10 @@ function BugReportDialog({ open, onClose }) {
   };
 
   const handleSubmit = async () => {
-    // TODO: Submit the bug report to the backend
-    await axios.post("/api/bug-reports", bugReport);
+    await axios.post(
+      "https://github.com/victoroyoma/SpatialOpsV2/api/bug-reports",
+      bugReport
+    );
     onClose();
   };
 

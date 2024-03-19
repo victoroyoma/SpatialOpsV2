@@ -35,7 +35,7 @@ app.use("/tasks", taskRoutes);
 app.use("/api", messagingRoutes);
 app.use("/api/deviceLogs", deviceLogRoutes);
 app.use("/api/htmlCaptures", htmlCaptureRoutes);
-app.use("/api/bug-reports", bugReportRoutes);
+app.use("/api", bugReportRoutes);
 app.use("/api", codeContentRoutes);
 
 //sync({ force: true }) for Clearing and Creating DB
