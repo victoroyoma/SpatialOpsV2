@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const bugReportController = require("../controllers/bugReportController");
+const BugReportController = require("../controllers/bugReportController");
 
-router.post("/bugReports", bugReportController.createBugReport);
-router.get("/bugReports", bugReportController.getBugReports);
+router.get("/", BugReportController.getAllBugReports);
+router.post("/", BugReportController.createBugReport);
 
 module.exports = router;

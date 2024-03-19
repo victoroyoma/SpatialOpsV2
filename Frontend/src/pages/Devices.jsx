@@ -13,7 +13,7 @@ import {
   Modal,
   Typography,
 } from "@mui/material";
-import axios from "axios"; // Assuming axios for HTTP requests
+import axios from "axios";
 import BugReportDialog from "../components/BugReportDialog";
 import Logs from "../components/Logs";
 import CodeViewer from "../components/CodeViewer";
@@ -24,14 +24,12 @@ function DeviceLog() {
   const [selectedLog, setSelectedLog] = useState(null);
 
   useEffect(() => {
-    // Fetch bug reports from your backend
     const fetchBugReports = async () => {
       try {
-        const response = await axios.get("/api/bug-reports"); // Adjust API endpoint as necessary
-        setBugReports(response.data); // Assume response.data contains the array of bug reports
+        const response = await axios.get("/api/bug-reports");
+        setBugReports(response.data);
       } catch (error) {
         console.error("Failed to fetch bug reports:", error);
-        // Handle error appropriately
       }
     };
 

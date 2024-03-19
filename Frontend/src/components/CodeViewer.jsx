@@ -1,28 +1,38 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Container, Typography } from "@mui/material";
-// Assuming you have a component for syntax highlighting
-// import SyntaxHighlighter from 'react-syntax-highlighter';
-// import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 function CodeViewer({ filePath }) {
   const [codeContent, setCodeContent] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // TODO: Fetch the content of the file from GitHub or your backend
-    // Example: setCodeContent(fetchedContent);
+    const fetchCodeContent = async () => {
+      try {
+        const response = await axios.get(
+          `/api/code-content?filePath=${encodeURIComponent(filePath)}`
+        );
+        setCodeContent(response.data);
+      } catch (error) {
+        console.error("Failed to fetch code content:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (filePath) {
+      fetchCodeContent();
+    }
   }, [filePath]);
+
+  if (loading) {
+    return <Typography>Loading code content...</Typography>;
+  }
 
   return (
     <Container>
       <Typography variant="h5">Code Viewer</Typography>
-      {/* Display the code content. You can replace this with a syntax highlighter component */}
       <pre>{codeContent}</pre>
-      {/* Example with syntax highlighting:
-      <SyntaxHighlighter language="javascript" style={docco}>
-        {codeContent}
-      </SyntaxHighlighter>
-      */}
-      {/* TODO: Implement loading and error handling */}
     </Container>
   );
 }
