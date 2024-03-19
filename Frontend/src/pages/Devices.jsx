@@ -26,7 +26,9 @@ function DeviceLog() {
   useEffect(() => {
     const fetchBugReports = async () => {
       try {
-        const response = await axios.get("/api/bug-reports");
+        const response = await axios.get(
+          "https://spatial-ops-v2.vercel.app/api/bug-reports"
+        );
         setBugReports(response.data);
       } catch (error) {
         console.error("Failed to fetch bug reports:", error);
