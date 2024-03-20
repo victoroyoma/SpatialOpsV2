@@ -26,7 +26,6 @@ function BugReportDialog({ open, onClose }) {
       "https://spatial-ops-v2.vercel.app/api/bug-reports",
       bugReport
     );
-    onClose();
   };
 
   return (
