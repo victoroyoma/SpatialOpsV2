@@ -46,7 +46,7 @@ const routeSetup = [
   { path: "/api/messages", handler: messagingRoutes },
   { path: "/api/deviceLogs", handler: deviceLogRoutes },
   { path: "/api/htmlCaptures", handler: htmlCaptureRoutes },
-  { path: "/api/bug-reports", handler: bugReportRoutes },
+  { path: "/api/bug-report", handler: bugReportRoutes },
   { path: "/api/code-content", handler: codeContentRoutes },
 ];
 
