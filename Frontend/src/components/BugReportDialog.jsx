@@ -6,6 +6,8 @@ import {
   DialogActions,
   TextField,
   Button,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import axios from "axios";
 
@@ -17,15 +19,26 @@ function BugReportDialog({ open, onClose }) {
     occurredAt: "",
   });
 
+  // Additional state for loading and error handling
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
     setBugReport({ ...bugReport, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
-    await axios.post(
-      "https://spatial-ops-v2.vercel.app/api/bug-reports",
-      bugReport
-    );
+    setLoading(true);
+    setError("");
+    try {
+      await axios.post("/bug-reports", bugReport);
+      onClose();
+    } catch (error) {
+      console.error("Failed to submit bug report:", error);
+      setError("Failed to submit bug report. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -77,11 +90,14 @@ function BugReportDialog({ open, onClose }) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
+        {error && <Alert severity="error">{error}</Alert>}
+        {"Unable to Submit to DB "}
+        <Button onClick={onClose} color="primary" disabled={loading}>
           Cancel
         </Button>
-        <Button onClick={handleSubmit} color="primary">
-          Submit
+        <Button onClick={handleSubmit} color="primary" disabled={loading}>
+          {loading ? <CircularProgress size={24} /> : "Submit"}
+          {"Bug Reported Submitted "}
         </Button>
       </DialogActions>
     </Dialog>
