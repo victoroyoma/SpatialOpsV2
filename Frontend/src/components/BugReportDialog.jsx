@@ -30,7 +30,7 @@ function BugReportDialog({ open, onClose }) {
     setLoading(true);
     setError("");
     try {
-      await axios.post("/bug-reports", bugReport);
+      await axios.post("/api/bug-reports", bugReport);
       onClose();
     } catch (error) {
       console.error("Failed to submit bug report:", error);
