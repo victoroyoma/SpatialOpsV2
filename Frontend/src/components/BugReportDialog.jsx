@@ -19,7 +19,6 @@ function BugReportDialog({ open, onClose }) {
     occurredAt: "",
   });
 
-  // Additional state for loading and error handling
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -90,14 +89,12 @@ function BugReportDialog({ open, onClose }) {
         />
       </DialogContent>
       <DialogActions>
-        {error && <Alert severity="error">{error}</Alert>}
-        {"Unable to Submit to DB "}
+        {error && <Alert severity="error">{error}</Alert>}{" "}
         <Button onClick={onClose} color="primary" disabled={loading}>
           Cancel
         </Button>
         <Button onClick={handleSubmit} color="primary" disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : "Submit"}
-          {"Bug Reported Submitted "}
+          {loading ? <CircularProgress size={24} /> : "Submit"}{" "}
         </Button>
       </DialogActions>
     </Dialog>
