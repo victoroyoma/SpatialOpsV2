@@ -23,7 +23,7 @@ function BugReportDialog({ open, onClose }) {
 
   const handleSubmit = async () => {
     await axios.post(
-      "https://github.com/victoroyoma/SpatialOpsV2/api/bug-reports",
+      "https://spatial-ops-v2.vercel.app/api/bug-reports",
       bugReport
     );
     onClose();
