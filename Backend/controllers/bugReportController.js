@@ -1,6 +1,6 @@
 const BugReport = require("../models/BugReport");
 
-exports.getAllBugReports = async (req, res) => {
+const getAllBugReports = async (req, res) => {
   try {
     const bugReports = await BugReport.findAll();
     return res.status(200).json({
@@ -18,7 +18,7 @@ exports.getAllBugReports = async (req, res) => {
   }
 };
 
-exports.createBugReport = async (req, res) => {
+const createBugReport = async (req, res) => {
   const { errorMessage, component, lineNumber, occurredAt } = req.body;
 
   if (!errorMessage || !component || !lineNumber || !occurredAt) {
@@ -50,3 +50,5 @@ exports.createBugReport = async (req, res) => {
     });
   }
 };
+
+module.exports = { createBugReport, getAllBugReports };
