@@ -25,18 +25,15 @@ function BugReportDialog({ open, onClose }) {
     setBugReport({ ...bugReport, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
-    setFeedback({ type: "", message: "" });
     try {
-      const response = await axios.post(
-        "https://spatial-ops-v2.vercel.app/api/bug-report",
+      await axios.post(
+        "https://spatial-ops-v2.vercel.app/api/bug-reports",
         bugReport
       );
-      const successMessage =
-        response.data.message || "Bug report submitted successfully.";
-      setFeedback({ type: "success", message: successMessage });
-      onClose();
+      // Reset form after successful submission
       setBugReport({
         errorMessage: "",
         component: "",
@@ -45,20 +42,11 @@ function BugReportDialog({ open, onClose }) {
       });
     } catch (error) {
       console.error("Failed to submit bug report:", error);
-      let errorMessage = "Failed to submit bug report. Please try again.";
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        errorMessage = error.response.data.message;
-      }
-      setFeedback({ type: "error", message: errorMessage });
+      setFeedback("Failed to submit bug report. Please try again.");
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <Dialog open={open} onClose={() => onClose(false)} fullWidth maxWidth="sm">
       <DialogTitle>File a Bug</DialogTitle>

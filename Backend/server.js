@@ -10,10 +10,11 @@ const devGalleryRoutes = require("./routes/devGalleryRoutes");
 const messagingRoutes = require("./routes/messagingRoutes");
 const deviceLogRoutes = require("./routes/deviceLogRoutes");
 const htmlCaptureRoutes = require("./routes/htmlCaptureRoutes");
-const bugReportRoutes = require("./routes/bugReportRoutes");
+// const bugReportRoutes = require("./routes/bugReportRoutes");
 const codeContentRoutes = require("./routes/codeContentRoutes");
 
 const { sequelize } = require("./models/index");
+const BugReport = require("./models/BugReport");
 
 const app = express();
 
@@ -46,12 +47,40 @@ const routeSetup = [
   { path: "/api/messages", handler: messagingRoutes },
   { path: "/api/deviceLogs", handler: deviceLogRoutes },
   { path: "/api/htmlCaptures", handler: htmlCaptureRoutes },
-  { path: "/api/bug-report", handler: bugReportRoutes },
+  // { path: "/api/bug-report", handler: bugReportRoutes },
   { path: "/api/code-content", handler: codeContentRoutes },
 ];
 
 routeSetup.forEach((route) => {
   app.use(route.path, route.handler);
+});
+
+app.get("/api/bug-reports", async (req, res) => {
+  try {
+    const bugReports = await BugReport.findAll();
+    res.json({ success: true, data: bugReports });
+  } catch (error) {
+    console.error("Fetch Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch bug reports",
+      error: error.message,
+    });
+  }
+});
+
+app.post("/api/bug-reports", async (req, res) => {
+  try {
+    const bugReport = await BugReport.create(req.body);
+    res.status(201).json({ success: true, data: bugReport });
+  } catch (error) {
+    console.error("Creation Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create bug report",
+      error: error.message,
+    });
+  }
 });
 
 app.all("*", (req, res) => {

@@ -22,6 +22,7 @@ function DeviceLog() {
   const [bugDialogOpen, setBugDialogOpen] = useState(false);
   const [bugReports, setBugReports] = useState([]);
   const [selectedLog, setSelectedLog] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchBugReports = async () => {
@@ -29,14 +30,19 @@ function DeviceLog() {
         const response = await axios.get(
           "https://spatial-ops-v2.vercel.app/api/bug-reports"
         );
-        setBugReports(response.data);
+        setBugReports(response.data.data);
       } catch (error) {
         console.error("Failed to fetch bug reports:", error);
+        setError("Failed to fetch bug reports. Please try again later.");
       }
     };
 
     fetchBugReports();
   }, []);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   const handleOpenBugDialog = () => setBugDialogOpen(true);
   const handleCloseBugDialog = () => setBugDialogOpen(false);
