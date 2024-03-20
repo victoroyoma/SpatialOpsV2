@@ -18,9 +18,8 @@ function BugReportDialog({ open, onClose }) {
     lineNumber: "",
     occurredAt: "",
   });
-
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [feedback, setFeedback] = useState({ type: "", message: "" });
 
   const handleChange = (e) => {
     setBugReport({ ...bugReport, [e.target.name]: e.target.value });
@@ -28,23 +27,40 @@ function BugReportDialog({ open, onClose }) {
 
   const handleSubmit = async () => {
     setLoading(true);
-    setError("");
+    setFeedback({ type: "", message: "" });
     try {
-      await axios.post(
+      const response = await axios.post(
         "https://spatial-ops-v2.vercel.app/api/bug-reports",
         bugReport
       );
+      const successMessage =
+        response.data.message || "Bug report submitted successfully.";
+      setFeedback({ type: "success", message: successMessage });
       onClose();
+      setBugReport({
+        errorMessage: "",
+        component: "",
+        lineNumber: "",
+        occurredAt: "",
+      });
     } catch (error) {
       console.error("Failed to submit bug report:", error);
-      setError("Failed to submit bug report. Please try again.");
+      let errorMessage = "Failed to submit bug report. Please try again.";
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        errorMessage = error.response.data.message;
+      }
+      setFeedback({ type: "error", message: errorMessage });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={() => onClose(false)} fullWidth maxWidth="sm">
       <DialogTitle>File a Bug</DialogTitle>
       <DialogContent>
         <TextField
@@ -86,18 +102,22 @@ function BugReportDialog({ open, onClose }) {
           variant="outlined"
           value={bugReport.occurredAt}
           onChange={handleChange}
-          InputLabelProps={{
-            shrink: true,
-          }}
+          InputLabelProps={{ shrink: true }}
         />
       </DialogContent>
       <DialogActions>
-        {error && <Alert severity="error">{error}</Alert>}{" "}
-        <Button onClick={onClose} color="primary" disabled={loading}>
+        {feedback.message && (
+          <Alert severity={feedback.type}>{feedback.message}</Alert>
+        )}
+        <Button
+          onClick={() => onClose(false)}
+          color="primary"
+          disabled={loading}
+        >
           Cancel
         </Button>
         <Button onClick={handleSubmit} color="primary" disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : "Submit"}{" "}
+          {loading ? <CircularProgress size={24} /> : "Submit"}
         </Button>
       </DialogActions>
     </Dialog>
