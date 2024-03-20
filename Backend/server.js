@@ -4,7 +4,6 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-// Import routes
 const userRoutes = require("./routes/userRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const devGalleryRoutes = require("./routes/devGalleryRoutes");
@@ -18,25 +17,45 @@ const { sequelize } = require("./models/index");
 
 const app = express();
 
-// Define CORS options
 const corsOptions = {
   origin: "https://spatial-ops-v2.vercel.app",
 };
 app.use(cors(corsOptions));
 
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Setup routes
-app.use("/api", userRoutes);
-app.use("/api/dev-gallery", devGalleryRoutes);
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/tasks", taskRoutes);
-app.use("/api", messagingRoutes);
-app.use("/api/deviceLogs", deviceLogRoutes);
-app.use("/api/htmlCaptures", htmlCaptureRoutes);
-app.use("/api/bug-reports", bugReportRoutes);
-app.use("/api/code-content", codeContentRoutes);
+// Middleware to log requests for debugging purposes
+app.use((req, res, next) => {
+  console.log(
+    `${req.method} request for '${req.url}' - ${JSON.stringify(req.body)}`
+  );
+  next();
+});
+
+const routeSetup = [
+  { path: "/api/users", handler: userRoutes },
+  { path: "/api/dev-gallery", handler: devGalleryRoutes },
+  {
+    path: "/api/uploads",
+    handler: express.static(path.join(__dirname, "uploads")),
+  },
+  { path: "/api/tasks", handler: taskRoutes },
+  { path: "/api/messages", handler: messagingRoutes },
+  { path: "/api/deviceLogs", handler: deviceLogRoutes },
+  { path: "/api/htmlCaptures", handler: htmlCaptureRoutes },
+  { path: "/api/bug-reports", handler: bugReportRoutes },
+  { path: "/api/code-content", handler: codeContentRoutes },
+];
+
+routeSetup.forEach((route) => {
+  app.use(route.path, route.handler);
+});
+
+app.all("*", (req, res) => {
+  res.status(404).send("Endpoint not found.");
+});
 
 //sync({ force: true }) for Clearing and Creating DB
 sequelize.sync().then(() => {
