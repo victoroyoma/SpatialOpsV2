@@ -1,23 +1,5 @@
 const BugReport = require("../models/BugReport");
 
-const getAllBugReports = async (req, res) => {
-  try {
-    const bugReports = await BugReport.findAll();
-    return res.status(200).json({
-      success: true,
-      count: bugReports.length,
-      data: bugReports,
-    });
-  } catch (error) {
-    console.error("Fetch Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch bug reports",
-      error: error.message,
-    });
-  }
-};
-
 const createBugReport = async (req, res) => {
   const { errorMessage, component, lineNumber, occurredAt } = req.body;
 
@@ -28,6 +10,24 @@ const createBugReport = async (req, res) => {
         "Please provide all required fields: errorMessage, component, lineNumber, occurredAt",
     });
   }
+
+  const getAllBugReports = async (req, res) => {
+    try {
+      const bugReports = await BugReport.findAll();
+      return res.status(200).json({
+        success: true,
+        count: bugReports.length,
+        data: bugReports,
+      });
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch bug reports",
+        error: error.message,
+      });
+    }
+  };
 
   try {
     const bugReport = await BugReport.create({

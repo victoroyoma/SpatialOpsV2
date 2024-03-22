@@ -55,20 +55,6 @@ routeSetup.forEach((route) => {
   app.use(route.path, route.handler);
 });
 
-app.get("/api/bug-reports", async (req, res) => {
-  try {
-    const bugReports = await BugReport.findAll();
-    res.json({ success: true, data: bugReports });
-  } catch (error) {
-    console.error("Fetch Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch bug reports",
-      error: error.message,
-    });
-  }
-});
-
 app.post("/api/bug-reports", async (req, res) => {
   try {
     const bugReport = await BugReport.create(req.body);
@@ -78,6 +64,20 @@ app.post("/api/bug-reports", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to create bug report",
+      error: error.message,
+    });
+  }
+});
+
+app.get("/api/bug-reports", async (req, res) => {
+  try {
+    const bugReports = await BugReport.findAll();
+    res.json({ success: true, data: bugReports });
+  } catch (error) {
+    console.error("Fetch Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch bug reports",
       error: error.message,
     });
   }
