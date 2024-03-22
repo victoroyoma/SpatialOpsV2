@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
-const cors = require("cors");
+// const cors = require("cors");
 
 const userRoutes = require("./routes/userRoutes");
 const taskRoutes = require("./routes/taskRoutes");
@@ -18,11 +18,11 @@ const BugReport = require("./models/BugReport");
 
 const app = express();
 
-const corsOptions = {
-  origin: "https://spatial-ops-v2.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-};
-app.use(cors(corsOptions));
+// const corsOptions = {
+//   origin: "https://spatial-ops-v2.vercel.app",
+//   methods: ["GET", "POST", "PUT", "DELETE"],
+// };
+// app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));

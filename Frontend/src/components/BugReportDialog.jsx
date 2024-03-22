@@ -33,7 +33,7 @@ function BugReportDialog({ open, onClose }) {
         "https://spatial-ops-v2.vercel.app/api/report-bug",
         bugReport
       );
-      // Reset form after successful submission
+
       setBugReport({
         errorMessage: "",
         component: "",
