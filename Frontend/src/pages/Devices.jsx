@@ -24,6 +24,30 @@ function DeviceLog() {
   const [selectedLog, setSelectedLog] = useState(null);
   const [error, setError] = useState("");
 
+  const demoBugReports = [
+    {
+      id: 1,
+      errorMessage: "405 Method not supported",
+      component: "Device Log",
+      lineNumber: 33,
+      occurredAt: new Date(),
+    },
+    {
+      id: 2,
+      errorMessage: "404 Method not found",
+      component: "Device Log",
+      lineNumber: 20,
+      occurredAt: new Date(),
+    },
+    {
+      id: 3,
+      errorMessage: "403 Access Denailed",
+      component: "Messaging Error",
+      lineNumber: 65,
+      occurredAt: new Date(),
+    },
+  ];
+
   useEffect(() => {
     const fetchBugReports = async () => {
       try {
@@ -38,6 +62,7 @@ function DeviceLog() {
     };
 
     fetchBugReports();
+    setBugReports(demoBugReports);
   }, []);
 
   if (error) {
