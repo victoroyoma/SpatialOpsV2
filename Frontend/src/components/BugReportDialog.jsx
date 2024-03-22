@@ -30,7 +30,7 @@ function BugReportDialog({ open, onClose }) {
     setLoading(true);
     try {
       await axios.post(
-        "https://spatial-ops-v2.vercel.app/api/bug-reports",
+        "https://spatial-ops-v2.vercel.app/api/report-bug",
         bugReport
       );
       // Reset form after successful submission

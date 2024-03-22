@@ -28,7 +28,7 @@ function DeviceLog() {
     const fetchBugReports = async () => {
       try {
         const response = await axios.get(
-          "https://spatial-ops-v2.vercel.app/api/bug-reports"
+          "https://spatial-ops-v2.vercel.app/api/reported-bugs"
         );
         setBugReports(response.data.data);
       } catch (error) {

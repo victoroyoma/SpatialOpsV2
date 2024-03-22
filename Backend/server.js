@@ -55,7 +55,7 @@ routeSetup.forEach((route) => {
   app.use(route.path, route.handler);
 });
 
-app.post("/api/bug-reports", async (req, res) => {
+app.post("/api/report-bug", async (req, res) => {
   try {
     const bugReport = await BugReport.create(req.body);
     res.status(201).json({ success: true, data: bugReport });
@@ -69,7 +69,7 @@ app.post("/api/bug-reports", async (req, res) => {
   }
 });
 
-app.get("/api/bug-reports", async (req, res) => {
+app.get("/api/reported-bugs", async (req, res) => {
   try {
     const bugReports = await BugReport.findAll();
     res.json({ success: true, data: bugReports });
