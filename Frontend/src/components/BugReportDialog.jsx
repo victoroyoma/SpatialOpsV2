@@ -40,13 +40,21 @@ function BugReportDialog({ open, onClose }) {
         lineNumber: "",
         occurredAt: "",
       });
+      setFeedback({
+        type: "success",
+        message: "Bug report submitted successfully",
+      });
     } catch (error) {
       console.error("Failed to submit bug report:", error);
-      setFeedback("Failed to submit bug report. Please try again.");
+      setFeedback({
+        type: "error",
+        message: "Failed to submit bug report. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <Dialog open={open} onClose={() => onClose(false)} fullWidth maxWidth="sm">
       <DialogTitle>File a Bug</DialogTitle>
